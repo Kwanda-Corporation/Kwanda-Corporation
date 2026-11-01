@@ -1,8 +1,7 @@
 import { fbm2, smoothstep } from './noise';
 
 export const WORLD_SIZE = 1200;
-export const PLAY_RADIUS = 170;
-export const START_FOCUS = { x: -14, z: 26 };
+export const PLAY_RADIUS = 220;
 
 export function terrainHeight(x: number, z: number): number {
   const radius = Math.hypot(x, z);

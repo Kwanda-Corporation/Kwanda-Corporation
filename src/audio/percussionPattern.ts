@@ -17,5 +17,3 @@ export const DRUMMER_STEPS: number[][] = [
   [2, 4, 7, 9, 12, 15],
   [0, 2, 5, 7, 10, 12, 15],
 ];
-
-export const AMBIENT_SCALE = [146.83, 174.61, 196.0, 220.0, 261.63, 293.66];

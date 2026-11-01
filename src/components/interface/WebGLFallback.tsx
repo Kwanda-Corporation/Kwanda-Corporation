@@ -27,7 +27,7 @@ export function WebGLFallback() {
         </p>
       </div>
 
-      <p className="fallback-foot">KWANDA GROUP · THE ART OF EXPANSION</p>
+      <p className="fallback-foot">KWANDA GROUP · WHERE SOFTWARE MEETS ART</p>
     </div>
   );
 }

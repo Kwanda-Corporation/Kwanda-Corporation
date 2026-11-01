@@ -49,15 +49,27 @@ const RANGES: RangeConfig[] = [
 
 const MOUNTAIN_VERTEX = /* glsl */ `
   attribute float aAccent;
+  attribute float aWire;
+  attribute float aSeed;
+  attribute float aElev;
+  attribute float aLine;
   varying vec3 vWorld;
   varying vec3 vNormalWorld;
   varying float vAccent;
+  varying float vWire;
+  varying float vSeed;
+  varying float vElev;
+  varying float vLine;
 
   void main() {
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
     vWorld = worldPosition.xyz;
     vNormalWorld = normalize(mat3(modelMatrix) * normal);
     vAccent = aAccent;
+    vWire = aWire;
+    vSeed = aSeed;
+    vElev = aElev;
+    vLine = aLine;
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
   }
 `;
@@ -73,6 +85,10 @@ const MOUNTAIN_FRAGMENT = /* glsl */ `
   varying vec3 vWorld;
   varying vec3 vNormalWorld;
   varying float vAccent;
+  varying float vWire;
+  varying float vSeed;
+  varying float vElev;
+  varying float vLine;
 
   float contour(float height, float spacing) {
     float band = height / spacing;
@@ -96,12 +112,26 @@ const MOUNTAIN_FRAGMENT = /* glsl */ `
     );
     color += vec3(0.0105, 0.0094, 0.0078) * smoothstep(0.15, 0.9, heightFactor) * (0.35 + slope * 0.65);
 
-    float lines = contour(vWorld.y, 4.6);
-    float major = contour(vWorld.y, 19.0);
+    // Horizontal elevation contours build the topographic drawing. A subset of
+    // mountains also receive meridional ribs, turning their surface into a
+    // draped wireframe instead of horizontal banding alone.
+    float spacing = 4.6 * vLine;
+    float lines = contour(vWorld.y, spacing);
+    float major = contour(vWorld.y, spacing * 4.1);
 
     vec3 lineColor = mix(uLineColor, uAccentColor, vAccent * 0.85);
-    color += lineColor * lines * (0.05 + rim * 0.16 + slope * 0.03);
-    color += uLineColor * major * 0.06 * (0.55 + rim);
+    float lineBoost = mix(1.0, 0.72, vWire);
+    color += lineColor * lines * (0.05 + rim * 0.16 + slope * 0.03) * lineBoost;
+    color += uLineColor * major * 0.06 * (0.55 + rim) * lineBoost;
+
+    float rib = contour(vWorld.x * 0.74 + vWorld.z * 0.67 + vSeed * 7.0, 7.2 * vLine);
+    float ribFine = contour(vWorld.x * -0.39 + vWorld.z * 0.92 + vSeed * 13.0, 15.0 * vLine);
+    float ribFade = smoothstep(0.03, 0.5, vElev);
+    color += lineColor * rib * vWire * (0.038 + rim * 0.12) * ribFade;
+    color += lineColor * ribFine * vWire * 0.016 * ribFade;
+
+    float crest = smoothstep(0.9, 0.99, vElev) * smoothstep(0.3, 0.8, rim);
+    color += lineColor * crest * 0.16;
     color += uLineColor * rim * 0.055;
 
     float distanceToCamera = length(vWorld - cameraPosition);
@@ -119,6 +149,10 @@ function buildMountains(): THREE.BufferGeometry {
   const random = mulberry32(913771);
   const positions: number[] = [];
   const accents: number[] = [];
+  const wires: number[] = [];
+  const seeds: number[] = [];
+  const elevations: number[] = [];
+  const lineScales: number[] = [];
   const indices: number[] = [];
 
   RANGES.forEach((range, rangeIndex) => {
@@ -135,6 +169,12 @@ function buildMountains(): THREE.BufferGeometry {
       const baseRadius = lerp(range.baseMin, range.baseMax, random());
       const baseY = terrainHeight(centerX, centerZ) - 13;
       const accent = random() < 0.14 ? 1 : 0;
+      const wireChance = rangeIndex === 0 ? 0.44 : rangeIndex === 1 ? 0.36 : 0.22;
+      const wire = random() < wireChance ? 1 : 0;
+      const seed = random() * 10;
+      const lineScale =
+        (rangeIndex === 0 ? 0.96 : rangeIndex === 1 ? 1.08 : 1.24) +
+        (random() - 0.5) * 0.14;
       const noiseSeed = 911 + index * 37 + rangeIndex * 101;
 
       const bumps: Bump[] = [
@@ -200,6 +240,10 @@ function buildMountains(): THREE.BufferGeometry {
 
           positions.push(centerX + ox, baseY + elevation, centerZ + oz);
           accents.push(accent);
+          wires.push(wire);
+          seeds.push(seed);
+          elevations.push(Math.min(1, Math.max(0, elevation / Math.max(1, height))));
+          lineScales.push(lineScale);
         }
       }
 
@@ -224,6 +268,22 @@ function buildMountains(): THREE.BufferGeometry {
   geometry.setAttribute(
     'aAccent',
     new THREE.BufferAttribute(new Float32Array(accents), 1),
+  );
+  geometry.setAttribute(
+    'aWire',
+    new THREE.BufferAttribute(new Float32Array(wires), 1),
+  );
+  geometry.setAttribute(
+    'aSeed',
+    new THREE.BufferAttribute(new Float32Array(seeds), 1),
+  );
+  geometry.setAttribute(
+    'aElev',
+    new THREE.BufferAttribute(new Float32Array(elevations), 1),
+  );
+  geometry.setAttribute(
+    'aLine',
+    new THREE.BufferAttribute(new Float32Array(lineScales), 1),
   );
   geometry.setIndex(indices);
   geometry.computeVertexNormals();

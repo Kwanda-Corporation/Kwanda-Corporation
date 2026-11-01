@@ -16,6 +16,7 @@ type AudioContextValue = {
   beginPercussion: () => Promise<boolean>;
   enterWorld: () => void;
   enableAmbience: () => Promise<void>;
+  disableAudio: () => void;
   setMuted: (muted: boolean) => void;
   setVolume: (volume: number) => void;
 };
@@ -89,6 +90,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const disableAudio = useCallback(() => {
+    audioEngine.stopAll();
+    setStarted(false);
+  }, []);
+
   const value = useMemo<AudioContextValue>(
     () => ({
       started,
@@ -97,10 +103,21 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       beginPercussion,
       enterWorld,
       enableAmbience,
+      disableAudio,
       setMuted,
       setVolume,
     }),
-    [started, muted, volume, beginPercussion, enterWorld, enableAmbience, setMuted, setVolume],
+    [
+      started,
+      muted,
+      volume,
+      beginPercussion,
+      enterWorld,
+      enableAmbience,
+      disableAudio,
+      setMuted,
+      setVolume,
+    ],
   );
 
   return <AudioCtx.Provider value={value}>{children}</AudioCtx.Provider>;

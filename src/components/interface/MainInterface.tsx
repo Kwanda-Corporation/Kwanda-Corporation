@@ -1,13 +1,34 @@
 import { useCallback, useEffect, useState, type MutableRefObject } from 'react';
 import { useIsTouch } from '../../hooks/useReducedMotion';
+import { LANDMARK_LIST, type LandmarkId } from '../../lib/landmarks';
+import { JOURNEY_STOPS } from '../../lib/journey';
 import { AudioControls } from '../audio/AudioControls';
 import type { NavigationApi } from '../world/CameraController';
 
-type MainInterfaceProps = {
-  apiRef: MutableRefObject<NavigationApi | null>;
+type JourneyState = {
+  status: 'idle' | 'driving' | 'arrived';
+  index: number;
 };
 
-export function MainInterface({ apiRef }: MainInterfaceProps) {
+type MainInterfaceProps = {
+  apiRef: MutableRefObject<NavigationApi | null>;
+  onNavigate: (id: LandmarkId) => void;
+  journey: JourneyState;
+  onStartJourney: () => void;
+  onContinueJourney: () => void;
+  onRestartJourney: () => void;
+};
+
+const LAST_STOP = JOURNEY_STOPS.length - 1;
+
+export function MainInterface({
+  apiRef,
+  onNavigate,
+  journey,
+  onStartJourney,
+  onContinueJourney,
+  onRestartJourney,
+}: MainInterfaceProps) {
   const touch = useIsTouch();
   const [fullscreen, setFullscreen] = useState(false);
   const [canFullscreen, setCanFullscreen] = useState(false);
@@ -37,7 +58,7 @@ export function MainInterface({ apiRef }: MainInterfaceProps) {
         <span className="brand-mark" aria-hidden="true" />
         <div>
           <p className="ui-brand-word">KWANDA</p>
-          <p className="ui-brand-sub">THE ART OF EXPANSION</p>
+          <p className="ui-brand-sub">WHERE SOFTWARE MEETS ART</p>
         </div>
       </header>
 
@@ -57,6 +78,20 @@ export function MainInterface({ apiRef }: MainInterfaceProps) {
           </button>
         )}
       </div>
+
+      <nav className="ui-destinations" aria-label="Destinations">
+        <span className="ui-destinations-label">Destinations</span>
+        {LANDMARK_LIST.map((info) => (
+          <button
+            key={info.id}
+            type="button"
+            className="ui-destinations-item"
+            onClick={() => onNavigate(info.id)}
+          >
+            {info.navLabel}
+          </button>
+        ))}
+      </nav>
 
       <div className="ui-bottom-left">
         <span className="hint-dot" aria-hidden="true" />
@@ -96,6 +131,31 @@ export function MainInterface({ apiRef }: MainInterfaceProps) {
         >
           <ResetIcon />
         </button>
+      </div>
+
+      <div className="journey-ui" aria-live="polite">
+        {journey.status === 'idle' && (
+          <button type="button" className="btn btn-primary journey-btn" onClick={onStartJourney}>
+            <span className="btn-dot" aria-hidden="true" />
+            Begin journey
+          </button>
+        )}
+
+        {journey.status === 'driving' && (
+          <span className="journey-driving">Travelling…</span>
+        )}
+
+        {journey.status === 'arrived' &&
+          (journey.index < LAST_STOP ? (
+            <button type="button" className="btn btn-primary journey-btn" onClick={onContinueJourney}>
+              Continue
+              <span aria-hidden="true">→</span>
+            </button>
+          ) : (
+            <button type="button" className="btn btn-primary journey-btn" onClick={onRestartJourney}>
+              Restart journey
+            </button>
+          ))}
       </div>
 
       <footer className="ui-footer" aria-hidden="true">

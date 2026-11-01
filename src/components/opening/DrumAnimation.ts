@@ -53,7 +53,9 @@ export function useDrummerMotion({
       const idleSeconds = now / 1000;
       const audioSeconds = playing ? audioEngine.getPercussionSeconds() : null;
       const fallbackSeconds = playing && fallbackStart > 0 ? (now - fallbackStart) / 1000 : null;
-      const rhythmSeconds = audioSeconds ?? fallbackSeconds;
+      const rhythmSeconds = playing
+        ? Math.max(0, audioSeconds ?? fallbackSeconds ?? 0)
+        : null;
 
       let strikeL = 0;
       let strikeR = 0;

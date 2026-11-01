@@ -8,9 +8,11 @@ type OpeningSceneProps = {
   onEnterWorld: () => void;
 };
 
+const DRUM_INTRO_MS = 5000;
+
 export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
   const reduced = useReducedMotion();
-  const { beginPercussion, enterWorld, muted, setMuted } = useAudio();
+  const { beginPercussion, enterWorld, enableAmbience, muted, setMuted } = useAudio();
 
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
@@ -23,9 +25,9 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
   const poemRef = useRef<HTMLParagraphElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const taglineLayerRef = useRef<HTMLDivElement>(null);
-  const enterActionsRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<HTMLButtonElement>(null);
   const enteredRef = useRef(false);
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -38,7 +40,6 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
       gsap.set([brandRef.current, controlsRef.current], { autoAlpha: 0 });
       gsap.set([poemRef.current, actionsRef.current], { opacity: 0, y: 12 });
       gsap.set(taglineLayerRef.current, { autoAlpha: 0 });
-      gsap.set(enterActionsRef.current, { autoAlpha: 0, y: 10 });
       gsap.set(skipRef.current, { autoAlpha: 0 });
       gsap.set(dots, { opacity: 0 });
 
@@ -92,8 +93,29 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
     return () => ctx.revert();
   }, [reduced]);
 
+  const goToWorld = useCallback(() => {
+    if (enteredRef.current) return;
+    enteredRef.current = true;
+    if (timerRef.current !== null) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    enterWorld();
+    onEnterWorld();
+  }, [enterWorld, onEnterWorld]);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current !== null) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    },
+    [],
+  );
+
   const handleBegin = useCallback(() => {
-    if (playing) return;
+    if (playing || enteredRef.current) return;
     setPlaying(true);
     setFallbackStart(performance.now());
     void beginPercussion();
@@ -111,25 +133,22 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
     gsap.to(taglineLayerRef.current, {
       autoAlpha: 1,
       duration: 1.3,
-      delay: 0.5,
+      delay: 0.4,
       ease: 'power2.out',
     });
 
-    gsap.to(enterActionsRef.current, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 1,
-      delay: 2.4,
-      ease: 'power2.out',
-    });
-  }, [beginPercussion, playing]);
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => {
+      timerRef.current = null;
+      goToWorld();
+    }, DRUM_INTRO_MS);
+  }, [beginPercussion, goToWorld, playing]);
 
-  const handleEnter = useCallback(() => {
+  const handleSkip = useCallback(() => {
     if (enteredRef.current) return;
-    enteredRef.current = true;
-    enterWorld();
-    onEnterWorld();
-  }, [enterWorld, onEnterWorld]);
+    void enableAmbience();
+    goToWorld();
+  }, [enableAmbience, goToWorld]);
 
   return (
     <div className="opening" ref={rootRef}>
@@ -167,7 +186,7 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
         type="button"
         className="opening-skip"
         ref={skipRef}
-        onClick={handleEnter}
+        onClick={handleSkip}
         tabIndex={ready ? 0 : -1}
       >
         Skip intro
@@ -176,7 +195,7 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
       <div className="opening-caption">
         <div className="opening-layer" ref={poemLayerRef}>
           <p className="opening-poem" ref={poemRef}>
-            Every journey begins with a rhythm.
+            Ideas have no boundaries.
           </p>
           <div className="opening-actions" ref={actionsRef}>
             <button
@@ -186,14 +205,6 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
               tabIndex={ready ? 0 : -1}
             >
               <span className="btn-dot" aria-hidden="true" />
-              Begin the rhythm
-            </button>
-            <button
-              type="button"
-              className="btn"
-              onClick={handleEnter}
-              tabIndex={ready ? 0 : -1}
-            >
               Enter the world
             </button>
           </div>
@@ -203,14 +214,8 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
           <p className="opening-tagline">
             <span>KWANDA</span>
             <span className="tagline-rule" aria-hidden="true" />
-            <span>THE ART OF EXPANSION.</span>
+            <span>WHERE SOFTWARE MEETS ART.</span>
           </p>
-          <div className="opening-actions" ref={enterActionsRef}>
-            <button type="button" className="btn btn-primary" onClick={handleEnter}>
-              <span className="btn-dot" aria-hidden="true" />
-              Enter the world
-            </button>
-          </div>
         </div>
       </div>
 

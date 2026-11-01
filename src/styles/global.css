@@ -718,6 +718,38 @@ input[type="range"]::-moz-range-thumb {
   background: var(--line);
 }
 
+/* ------------------------------------------------------------ guided journey */
+
+.journey-ui {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(46px, 8vh, 66px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  animation: ui-fade 1s var(--ease) 1.35s both;
+}
+
+.journey-ui button {
+  pointer-events: auto;
+}
+
+.journey-driving {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--white-45);
+}
+
+.journey-btn {
+  margin-top: 0;
+  background: rgba(10, 10, 9, 0.78);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
 /* --------------------------------------------------------------- transition */
 
 .curtain {
@@ -865,9 +897,10 @@ input[type="range"]::-moz-range-thumb {
   }
 
   .opening-svg {
-    width: 178vw;
+    width: 172vw;
     height: auto;
     max-height: 100%;
+    flex: 0 0 auto;
   }
 
   .opening-caption {
@@ -956,6 +989,44 @@ input[type="range"]::-moz-range-thumb {
 
   .fallback-text {
     font-size: 16px;
+  }
+}
+
+@media (pointer: coarse) {
+  .icon-button {
+    padding: 10px;
+    margin: -10px;
+  }
+
+  .opening-skip {
+    padding: 12px 2px;
+  }
+
+  .btn {
+    min-height: 46px;
+  }
+
+  .ui-button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+
+  .ui-button-square {
+    width: 40px;
+  }
+
+  .zoom-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ui-bottom-right {
+    gap: 7px;
+  }
+
+  input[type="range"] {
+    height: 28px;
   }
 }
 

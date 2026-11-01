@@ -1,17 +1,34 @@
 import { useEffect, useMemo, useRef, type MutableRefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { LANDMARK_LIST, landmarkRegistry } from '../../lib/landmarks';
 import { clamp } from '../../lib/noise';
+import { clampToPlayArea, terrainHeight } from '../../lib/terrain';
 import {
-  clampToPlayArea,
-  START_FOCUS,
-  terrainHeight,
-} from '../../lib/terrain';
+  driveViewAt,
+  DRIVE_DURATION_MS,
+  homeView,
+} from '../../lib/journey';
+
+export type CameraView = {
+  focusX: number;
+  focusZ: number;
+  distance: number;
+  azimuth: number;
+  elevation: number;
+};
 
 export type NavigationApi = {
   zoomIn: () => void;
   zoomOut: () => void;
   reset: () => void;
+  flyTo: (view: CameraView) => void;
+  getView: () => CameraView;
+  drive: (fromT: number, toT: number, opts?: {
+    onDone?: () => void;
+    onCancel?: () => void;
+  }) => void;
+  cancelDrive: () => void;
 };
 
 type CameraControllerProps = {
@@ -21,9 +38,6 @@ type CameraControllerProps = {
 };
 
 const ORANGE = '#e87532';
-const DEFAULT_DISTANCE = 104;
-const DEFAULT_AZIMUTH = 0.62;
-const DEFAULT_ELEVATION = 0.37;
 const MIN_DISTANCE = 34;
 const MAX_DISTANCE = 138;
 const MIN_ELEVATION = 0.14;
@@ -35,20 +49,33 @@ const damp = THREE.MathUtils.damp;
 export function CameraController({ terrainRef, apiRef, reduced }: CameraControllerProps) {
   const { camera, gl } = useThree();
 
+  const home = useMemo(() => homeView(), []);
+
   const motion = useRef({
-    focus: new THREE.Vector3(START_FOCUS.x, 0, START_FOCUS.z),
-    targetFocus: new THREE.Vector3(START_FOCUS.x, 0, START_FOCUS.z),
-    distance: DEFAULT_DISTANCE,
-    targetDistance: DEFAULT_DISTANCE,
-    azimuth: DEFAULT_AZIMUTH,
-    targetAzimuth: DEFAULT_AZIMUTH,
-    elevation: DEFAULT_ELEVATION,
-    targetElevation: DEFAULT_ELEVATION,
+    focus: new THREE.Vector3(home.focusX, 0, home.focusZ),
+    targetFocus: new THREE.Vector3(home.focusX, 0, home.focusZ),
+    distance: home.distance,
+    targetDistance: home.distance,
+    azimuth: home.azimuth,
+    targetAzimuth: home.azimuth,
+    elevation: home.elevation,
+    targetElevation: home.elevation,
+    framing: 1,
+    targetFraming: 1,
     markerLife: 0,
     markerX: 0,
     markerZ: 0,
     hasTarget: false,
     initialised: false,
+    drive: {
+      active: false,
+      fromT: 0,
+      toT: 0,
+      startTime: 0,
+      duration: 0,
+      onDone: null as (() => void) | null,
+      onCancel: null as (() => void) | null,
+    },
   });
 
   const markerRef = useRef<THREE.Group>(null);
@@ -83,45 +110,116 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
 
   useEffect(() => {
     const s = motion.current;
-    const ground = terrainHeight(START_FOCUS.x, START_FOCUS.z) + 1.4;
-    s.focus.set(START_FOCUS.x, ground, START_FOCUS.z);
+    const ground = terrainHeight(home.focusX, home.focusZ) + 1.4;
+    s.focus.set(home.focusX, ground, home.focusZ);
     s.targetFocus.copy(s.focus);
 
     camera.near = 0.4;
     camera.far = 2200;
     camera.updateProjectionMatrix();
 
+    // Expose the camera for integration tests and headless verification.
+    if (import.meta.env.DEV) {
+      const scope = globalThis as typeof globalThis & { __kwandaCamera?: THREE.Camera };
+      scope.__kwandaCamera = camera;
+    }
+
     return () => {
       route.geometry.dispose();
       (route.material as THREE.Material).dispose();
+      if (import.meta.env.DEV) {
+        const scope = globalThis as typeof globalThis & { __kwandaCamera?: THREE.Camera };
+        if (scope.__kwandaCamera === camera) scope.__kwandaCamera = undefined;
+      }
     };
-  }, [camera, route]);
+  }, [camera, route, home]);
 
   useEffect(() => {
+    const cancelDrive = () => {
+      const d = motion.current.drive;
+      if (!d.active) return;
+      d.active = false;
+      const onCancel = d.onCancel;
+      d.onDone = null;
+      d.onCancel = null;
+      onCancel?.();
+    };
+
     apiRef.current = {
       zoomIn: () => {
+        cancelDrive();
         const s = motion.current;
         s.targetDistance = clamp(s.targetDistance * 0.82, MIN_DISTANCE, MAX_DISTANCE);
       },
       zoomOut: () => {
+        cancelDrive();
         const s = motion.current;
         s.targetDistance = clamp(s.targetDistance * 1.22, MIN_DISTANCE, MAX_DISTANCE);
       },
       reset: () => {
+        cancelDrive();
         const s = motion.current;
-        const ground = terrainHeight(START_FOCUS.x, START_FOCUS.z) + 1.4;
-        s.targetFocus.set(START_FOCUS.x, ground, START_FOCUS.z);
-        s.targetDistance = DEFAULT_DISTANCE;
-        s.targetAzimuth = DEFAULT_AZIMUTH;
-        s.targetElevation = DEFAULT_ELEVATION;
+        const ground = terrainHeight(home.focusX, home.focusZ) + 1.4;
+        s.targetFocus.set(home.focusX, ground, home.focusZ);
+        s.targetDistance = home.distance;
+        s.targetAzimuth = home.azimuth;
+        s.targetElevation = home.elevation;
         s.hasTarget = false;
         if (route) route.visible = false;
       },
+      flyTo: (view) => {
+        cancelDrive();
+        const s = motion.current;
+        const ground = terrainHeight(view.focusX, view.focusZ) + 1.4;
+        s.targetFocus.set(view.focusX, ground, view.focusZ);
+        s.targetDistance = clamp(view.distance, MIN_DISTANCE, MAX_DISTANCE);
+        s.targetAzimuth = view.azimuth;
+        s.targetElevation = clamp(view.elevation, MIN_ELEVATION, MAX_ELEVATION);
+        s.hasTarget = false;
+        if (route) route.visible = false;
+      },
+      getView: () => {
+        const s = motion.current;
+        return {
+          focusX: s.targetFocus.x,
+          focusZ: s.targetFocus.z,
+          distance: s.targetDistance,
+          azimuth: s.targetAzimuth,
+          elevation: s.targetElevation,
+        };
+      },
+      drive: (fromT, toT, opts) => {
+        const d = motion.current.drive;
+        d.active = true;
+        d.fromT = fromT;
+        d.toT = toT;
+        d.startTime = performance.now();
+        d.duration = reduced ? 0 : DRIVE_DURATION_MS;
+        d.onDone = opts?.onDone ?? null;
+        d.onCancel = opts?.onCancel ?? null;
+        motion.current.hasTarget = false;
+        if (route) route.visible = false;
+      },
+      cancelDrive: () => {
+        cancelDrive();
+      },
     };
+    if (import.meta.env.DEV) {
+      const scope = globalThis as typeof globalThis & {
+        __kwandaNav?: NavigationApi;
+      };
+      scope.__kwandaNav = apiRef.current;
+    }
     return () => {
       apiRef.current = null;
+      if (import.meta.env.DEV) {
+        const scope = globalThis as typeof globalThis & {
+          __kwandaNav?: NavigationApi;
+        };
+        if (scope.__kwandaNav) scope.__kwandaNav = undefined;
+      }
     };
-  }, [apiRef, route]);
+  }, [apiRef, route, home, reduced]);
 
   useEffect(() => {
     const element = gl.domElement;
@@ -205,9 +303,43 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
       setDestination(hits[0].point.x, hits[0].point.z);
     };
 
+    /**
+     * Landmarks register a single generous invisible hit volume. Picking one
+     * takes priority over terrain navigation and is far cheaper than testing
+     * the full architecture geometry.
+     */
+    const pickLandmark = (clientX: number, clientY: number) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return null;
+      const ndc = new THREE.Vector2(
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        -((clientY - rect.top) / rect.height) * 2 + 1,
+      );
+      raycaster.setFromCamera(ndc, camera);
+      for (const pick of landmarkRegistry.picks.values()) {
+        if (raycaster.intersectObject(pick.target, false).length > 0) return pick;
+      }
+      return null;
+    };
+
+    const clearHover = () => {
+      landmarkRegistry.setHovered(null);
+      element.style.cursor = '';
+    };
+
     const onPointerDown = (event: PointerEvent) => {
+      const drive = motion.current.drive;
+      if (drive.active) {
+        drive.active = false;
+        const onCancel = drive.onCancel;
+        drive.onDone = null;
+        drive.onCancel = null;
+        onCancel?.();
+      }
+
       element.setPointerCapture?.(event.pointerId);
       pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      clearHover();
 
       if (pointers.size === 1) {
         pointerDown = true;
@@ -224,7 +356,14 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
 
     const onPointerMove = (event: PointerEvent) => {
       const previous = pointers.get(event.pointerId);
-      if (!previous) return;
+      if (!previous) {
+        if (!pointerDown && event.pointerType === 'mouse') {
+          const hit = pickLandmark(event.clientX, event.clientY);
+          landmarkRegistry.setHovered(hit?.id ?? null);
+          element.style.cursor = hit ? 'pointer' : '';
+        }
+        return;
+      }
 
       const dx = event.clientX - previous.x;
       const dy = event.clientY - previous.y;
@@ -269,7 +408,14 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
       if (pointerDown && pointers.size === 0) {
         const elapsed = performance.now() - startTime;
         if (!moved && elapsed < 700) {
-          navigate(event.clientX, event.clientY);
+          const landmark = pickLandmark(event.clientX, event.clientY);
+          if (landmark) {
+            landmarkRegistry.setHovered(null);
+            element.style.cursor = '';
+            landmark.onSelect();
+          } else {
+            navigate(event.clientX, event.clientY);
+          }
         }
         pointerDown = false;
         moved = false;
@@ -283,6 +429,11 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
       pointerDown = false;
       pinchDistance = 0;
       element.classList.remove('is-grabbing');
+    };
+
+    const onPointerLeave = () => {
+      if (pointerDown) return;
+      clearHover();
     };
 
     const onWheel = (event: WheelEvent) => {
@@ -301,13 +452,13 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
         s.targetDistance = clamp(s.targetDistance * 1.22, MIN_DISTANCE, MAX_DISTANCE);
       } else if (event.key === '0') {
         s.targetFocus.set(
-          START_FOCUS.x,
-          terrainHeight(START_FOCUS.x, START_FOCUS.z) + 1.4,
-          START_FOCUS.z,
+          home.focusX,
+          terrainHeight(home.focusX, home.focusZ) + 1.4,
+          home.focusZ,
         );
-        s.targetDistance = DEFAULT_DISTANCE;
-        s.targetAzimuth = DEFAULT_AZIMUTH;
-        s.targetElevation = DEFAULT_ELEVATION;
+        s.targetDistance = home.distance;
+        s.targetAzimuth = home.azimuth;
+        s.targetElevation = home.elevation;
         s.hasTarget = false;
         route.visible = false;
       }
@@ -318,6 +469,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     element.addEventListener('pointermove', onPointerMove);
     element.addEventListener('pointerup', onPointerUp);
     element.addEventListener('pointercancel', onPointerCancel);
+    element.addEventListener('pointerleave', onPointerLeave);
     element.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKeyDown);
 
@@ -326,16 +478,50 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
       element.removeEventListener('pointermove', onPointerMove);
       element.removeEventListener('pointerup', onPointerUp);
       element.removeEventListener('pointercancel', onPointerCancel);
+      element.removeEventListener('pointerleave', onPointerLeave);
       element.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKeyDown);
       element.classList.remove('is-grabbing');
+      element.style.cursor = '';
     };
-  }, [camera, gl, raycaster, route, terrainRef]);
+  }, [camera, gl, raycaster, route, terrainRef, home]);
 
   useFrame((state, delta) => {
     const s = motion.current;
     const dt = Math.min(0.05, delta);
     const time = state.clock.elapsedTime;
+
+    // Guided journey: follow the road directly so the camera hugs the path
+    // between the mountains instead of drifting toward each sign.
+    const drive = s.drive;
+    if (drive.active) {
+      const now = performance.now();
+      let progress = drive.duration > 0 ? (now - drive.startTime) / drive.duration : 1;
+      const finished = progress >= 1;
+      if (finished) progress = 1;
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      const t = drive.fromT + (drive.toT - drive.fromT) * eased;
+      const view = driveViewAt(t);
+      const ground = terrainHeight(view.focusX, view.focusZ) + 1.4;
+      s.focus.set(view.focusX, ground, view.focusZ);
+      s.targetFocus.copy(s.focus);
+      s.azimuth = view.azimuth;
+      s.targetAzimuth = view.azimuth;
+      s.elevation = view.elevation;
+      s.targetElevation = view.elevation;
+      s.distance = view.distance;
+      s.targetDistance = view.distance;
+      s.hasTarget = false;
+      if (route) route.visible = false;
+      if (finished) {
+        drive.active = false;
+        const onDone = drive.onDone;
+        drive.onDone = null;
+        drive.onCancel = null;
+        onDone?.();
+      }
+    }
+
     const focusLambda = reduced ? 40 : 2.6;
     const turnLambda = reduced ? 40 : 6;
 
@@ -352,16 +538,31 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     s.azimuth = damp(s.azimuth, s.targetAzimuth, turnLambda, dt);
     s.elevation = damp(s.elevation, s.targetElevation, turnLambda, dt);
 
-    const horizontal = Math.cos(s.elevation) * s.distance;
+    for (const info of LANDMARK_LIST) {
+      const distanceToFocus = Math.hypot(
+        s.focus.x - info.position.x,
+        s.focus.z - info.position.z,
+      );
+      landmarkRegistry.setNear(info.id, distanceToFocus < info.nearRadius);
+    }
+
+    // Portrait screens have a much narrower horizontal field of view. Pull the
+    // camera back a little so the landscape keeps its cinematic framing.
+    const aspect = (camera as THREE.PerspectiveCamera).aspect || 1;
+    s.targetFraming = aspect < 1 ? clamp(1 / aspect, 1, 1.7) : 1;
+    s.framing = damp(s.framing, s.targetFraming, reduced ? 40 : 3, dt);
+
+    const viewDistance = s.distance * s.framing;
+    const horizontal = Math.cos(s.elevation) * viewDistance;
     const cameraX = s.focus.x + Math.sin(s.azimuth) * horizontal;
     const cameraZ = s.focus.z + Math.cos(s.azimuth) * horizontal;
-    let cameraY = s.focus.y + Math.sin(s.elevation) * s.distance;
+    let cameraY = s.focus.y + Math.sin(s.elevation) * viewDistance;
 
     const groundClearance = terrainHeight(cameraX, cameraZ) + 3.2;
     if (cameraY < groundClearance) cameraY = groundClearance;
 
     camera.position.set(cameraX, cameraY, cameraZ);
-    camera.lookAt(s.focus.x, s.focus.y + s.distance * 0.24, s.focus.z);
+    camera.lookAt(s.focus.x, s.focus.y + viewDistance * 0.24, s.focus.z);
 
     if (s.hasTarget) {
       const remaining = Math.hypot(s.focus.x - s.markerX, s.focus.z - s.markerZ);

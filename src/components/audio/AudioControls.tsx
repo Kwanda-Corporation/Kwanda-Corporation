@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAudio } from '../../hooks/useAudio';
 
 export function AudioControls() {
-  const { started, muted, volume, enableAmbience, setMuted, setVolume } = useAudio();
+  const { started, muted, volume, enableAmbience, disableAudio, setMuted, setVolume } = useAudio();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -43,20 +43,29 @@ export function AudioControls() {
       {open && (
         <div className="sound-panel" role="dialog" aria-label="Sound settings">
           <div className="sound-panel-header">
-            <span>AMBIENCE</span>
+            <span>SOUND</span>
             <span className={started && !muted ? 'status-on' : 'status-off'}>
               {started ? (muted ? 'MUTED' : 'ON') : 'OFF'}
             </span>
           </div>
 
           {started ? (
-            <button
-              type="button"
-              className="panel-action"
-              onClick={() => setMuted(!muted)}
-            >
-              {muted ? 'Resume ambience' : 'Mute ambience'}
-            </button>
+            <>
+              <button
+                type="button"
+                className="panel-action"
+                onClick={() => setMuted(!muted)}
+              >
+                {muted ? 'Resume sound' : 'Mute sound'}
+              </button>
+              <button
+                type="button"
+                className="panel-action"
+                onClick={disableAudio}
+              >
+                Stop sound
+              </button>
+            </>
           ) : (
             <button
               type="button"
@@ -65,7 +74,7 @@ export function AudioControls() {
                 void enableAmbience();
               }}
             >
-              Start ambience
+              Play sound
             </button>
           )}
 
@@ -84,8 +93,8 @@ export function AudioControls() {
           </label>
 
           <p className="sound-hint">
-            Original percussion and ambience, generated in your browser. No
-            recordings, no tracking.
+            Kwanda score and original percussion. Audio only plays here, with no
+            tracking.
           </p>
         </div>
       )}

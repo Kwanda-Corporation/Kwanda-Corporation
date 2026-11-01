@@ -1,9 +1,5 @@
-import {
-  AMBIENT_SCALE,
-  PATTERN,
-  STEP_DURATION,
-  STEPS,
-} from './percussionPattern';
+import ambienceUrl from './kwanda-ambience.mp3';
+import { PATTERN, STEP_DURATION, STEPS } from './percussionPattern';
 
 type Stage = 'idle' | 'percussion' | 'ambience';
 
@@ -30,16 +26,16 @@ class AudioEngine {
   private nextStepTime = 0;
   private percStart = 0;
 
-  private ambNodes: AudioNode[] = [];
-  private ambTimer: number | null = null;
-  private nextPluck = 0;
-  private pluckBus: GainNode | null = null;
   private ambRunning = false;
+  private ambFresh = true;
+  private piano: HTMLAudioElement | null = null;
+  private pianoSource: MediaElementAudioSourceNode | null = null;
 
   private stage: Stage = 'idle';
   private started = false;
   private muted = false;
   private volume = 0.62;
+  private suspendToken = 0;
 
   getStage(): Stage {
     return this.stage;
@@ -51,6 +47,7 @@ class AudioEngine {
 
   async ensure(): Promise<boolean> {
     try {
+      this.suspendToken += 1;
       if (!this.ctx) {
         const Ctor =
           window.AudioContext ??
@@ -111,13 +108,36 @@ class AudioEngine {
     master.gain.linearRampToValueAtTime(Math.max(0.0001, this.targetGain()), now + ramp);
   }
 
+  /**
+   * Create (or reuse) the piano element and start a muted loop while we still
+   * have the user's gesture. This unlocks autoplay and lets the mp3 stream
+   * download during the drum intro without touching the audio graph yet.
+   */
+  private preparePiano(): void {
+    if (!this.piano) {
+      const element = new Audio();
+      element.src = ambienceUrl;
+      element.loop = true;
+      element.preload = 'auto';
+      element.muted = true;
+      element.volume = 1;
+      this.piano = element;
+    }
+    const piano = this.piano;
+    if (!piano.paused) return;
+    void piano.play().catch(() => {
+      /* a later gesture will retry */
+    });
+  }
+
   async startPercussion(): Promise<boolean> {
+    this.preparePiano();
     const ready = await this.ensure();
     if (!ready || !this.ctx || !this.percBus || !this.ambBus) return false;
 
     this.started = true;
     this.stage = 'percussion';
-    this.stopAmbience(0.6);
+    this.stopAmbience(0.6, false);
 
     const ctx = this.ctx;
     const now = ctx.currentTime;
@@ -337,6 +357,7 @@ class AudioEngine {
   }
 
   async enableAmbience(): Promise<boolean> {
+    this.preparePiano();
     const ready = await this.ensure();
     if (!ready) return false;
     this.started = true;
@@ -345,188 +366,104 @@ class AudioEngine {
     return true;
   }
 
+  /**
+   * Fully stop the soundscape (not just mute it) and release the audio graph's
+   * CPU budget. The context stays alive so a later explicit gesture can resume.
+   */
+  stopAll(): void {
+    const ctx = this.ctx;
+    this.suspendToken += 1;
+    const token = this.suspendToken;
+
+    this.stage = 'idle';
+    this.started = false;
+    this.ambFresh = true;
+    this.stopAmbience(0.7);
+
+    if (this.percTimer !== null) {
+      window.clearInterval(this.percTimer);
+      this.percTimer = null;
+    }
+
+    if (ctx && this.percBus) {
+      const now = ctx.currentTime;
+      this.percBus.gain.cancelScheduledValues(now);
+      this.percBus.gain.setValueAtTime(Math.max(0.0001, this.percBus.gain.value), now);
+      this.percBus.gain.linearRampToValueAtTime(0.0001, now + 0.7);
+    }
+
+    if (ctx) {
+      window.setTimeout(() => {
+        if (this.suspendToken !== token || this.ctx !== ctx) return;
+        void ctx.suspend().catch(() => {
+          /* the browser can refuse to suspend in the background */
+        });
+      }, 900);
+    }
+  }
+
   private startAmbience(): void {
     const ctx = this.ctx;
     const ambBus = this.ambBus;
-    if (!ctx || !ambBus || this.ambRunning) return;
+    if (!ctx || !ambBus) return;
 
+    this.preparePiano();
+    const piano = this.piano;
+    if (!piano) return;
+
+    if (!this.pianoSource) {
+      try {
+        this.pianoSource = ctx.createMediaElementSource(piano);
+        this.pianoSource.connect(ambBus);
+      } catch {
+        /* the element is already attached to another graph */
+        return;
+      }
+    }
+
+    if (this.ambRunning) return;
     this.ambRunning = true;
     const now = ctx.currentTime;
 
+    if (this.ambFresh && piano.currentTime > 0.4) {
+      // The muted preload ran during the drum intro; start the score at its
+      // beginning once the world opens.
+      try {
+        piano.currentTime = 0;
+      } catch {
+        /* seeking can fail while the stream is still resolving */
+      }
+    }
+    this.ambFresh = false;
+
     ambBus.gain.cancelScheduledValues(now);
     ambBus.gain.setValueAtTime(Math.max(0.0001, ambBus.gain.value), now);
-    ambBus.gain.linearRampToValueAtTime(0.78, now + 3.2);
+    ambBus.gain.linearRampToValueAtTime(0.82, now + 2.4);
 
-    const droneGain = ctx.createGain();
-    droneGain.gain.value = 0.055;
-    const lowpass = ctx.createBiquadFilter();
-    lowpass.type = 'lowpass';
-    lowpass.frequency.value = 420;
-    lowpass.Q.value = 0.6;
-    droneGain.connect(lowpass);
-    lowpass.connect(ambBus);
-
-    const tremolo = ctx.createGain();
-    tremolo.gain.value = 0.85;
-    lowpass.disconnect();
-    lowpass.connect(tremolo);
-    tremolo.connect(ambBus);
-
-    const tremLfo = ctx.createOscillator();
-    tremLfo.frequency.value = 0.085;
-    const tremDepth = ctx.createGain();
-    tremDepth.gain.value = 0.14;
-    tremLfo.connect(tremDepth);
-    tremDepth.connect(tremolo.gain);
-
-    const filterLfo = ctx.createOscillator();
-    filterLfo.frequency.value = 0.052;
-    const filterDepth = ctx.createGain();
-    filterDepth.gain.value = 190;
-    filterLfo.connect(filterDepth);
-    filterDepth.connect(lowpass.frequency);
-
-    const droneFreqs = [55, 82.5, 110.2, 164.8];
-    droneFreqs.forEach((freq, index) => {
-      const osc = ctx.createOscillator();
-      osc.type = index === 2 ? 'triangle' : 'sine';
-      osc.frequency.value = freq;
-      osc.detune.value = (index % 2 === 0 ? 1 : -1) * (2 + index * 0.6);
-      const level = ctx.createGain();
-      level.gain.value = index === 0 ? 0.5 : index === 3 ? 0.18 : 0.3;
-      osc.connect(level);
-      level.connect(droneGain);
-      osc.start(now);
-      this.ambNodes.push(osc);
+    piano.muted = false;
+    void piano.play().catch(() => {
+      /* the context will retry on the next gesture */
     });
-
-    tremLfo.start(now);
-    filterLfo.start(now);
-    this.ambNodes.push(tremLfo, filterLfo);
-
-    if (this.noise) {
-      const wind = ctx.createBufferSource();
-      wind.buffer = this.noise;
-      wind.loop = true;
-      const windFilter = ctx.createBiquadFilter();
-      windFilter.type = 'bandpass';
-      windFilter.frequency.value = 520;
-      windFilter.Q.value = 0.55;
-      const windGain = ctx.createGain();
-      windGain.gain.value = 0.02;
-      wind.connect(windFilter);
-      windFilter.connect(windGain);
-      windGain.connect(ambBus);
-      wind.start(now, Math.random() * 0.8);
-      this.ambNodes.push(wind);
-
-      const windLfo = ctx.createOscillator();
-      windLfo.frequency.value = 0.043;
-      const windDepth = ctx.createGain();
-      windDepth.gain.value = 0.012;
-      windLfo.connect(windDepth);
-      windDepth.connect(windGain.gain);
-      windLfo.start(now);
-      this.ambNodes.push(windLfo);
-    }
-
-    const delay = ctx.createDelay(1.2);
-    delay.delayTime.value = 0.44;
-    const feedback = ctx.createGain();
-    feedback.gain.value = 0.34;
-    const wet = ctx.createGain();
-    wet.gain.value = 0.32;
-    const pluckBus = ctx.createGain();
-    pluckBus.gain.value = 0.6;
-
-    pluckBus.connect(ambBus);
-    pluckBus.connect(delay);
-    delay.connect(feedback);
-    feedback.connect(delay);
-    delay.connect(wet);
-    wet.connect(ambBus);
-    pluckBus.connect(wet);
-    this.pluckBus = pluckBus;
-
-    this.nextPluck = now + 2.4;
-    if (this.ambTimer === null) {
-      this.ambTimer = window.setInterval(this.pluckScheduler, 240);
-    }
   }
 
-  private pluckScheduler = (): void => {
-    const ctx = this.ctx;
-    if (!ctx || !this.pluckBus || !this.ambRunning) return;
-    const now = ctx.currentTime;
-    if (now < this.nextPluck) return;
-
-    this.pluck(this.nextPluck + 0.02, this.pluckBus);
-    this.nextPluck = now + 2.6 + Math.random() * 3.6;
-  };
-
-  private pluck(time: number, dest: AudioNode): void {
-    const ctx = this.ctx;
-    if (!ctx) return;
-
-    const scale = AMBIENT_SCALE;
-    const freq = scale[Math.floor(Math.random() * scale.length)] * (Math.random() > 0.75 ? 2 : 1);
-
-    const pan = ctx.createStereoPanner();
-    pan.pan.value = (Math.random() * 2 - 1) * 0.72;
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0001, time);
-    gain.gain.exponentialRampToValueAtTime(0.032, time + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, time + 1.6);
-
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = freq;
-
-    const harmonic = ctx.createOscillator();
-    harmonic.type = 'sine';
-    harmonic.frequency.value = freq * 2.01;
-    const harmonicGain = ctx.createGain();
-    harmonicGain.gain.value = 0.18;
-
-    osc.connect(gain);
-    harmonic.connect(harmonicGain);
-    harmonicGain.connect(gain);
-    gain.connect(pan);
-    pan.connect(dest);
-
-    osc.start(time);
-    harmonic.start(time);
-    osc.stop(time + 1.7);
-    harmonic.stop(time + 1.7);
-  }
-
-  private stopAmbience(fade: number): void {
+  private stopAmbience(fade: number, pauseElement = true): void {
     const ctx = this.ctx;
     const ambBus = this.ambBus;
+    const piano = this.piano;
     if (!ctx || !ambBus) return;
+
     const now = ctx.currentTime;
     ambBus.gain.cancelScheduledValues(now);
     ambBus.gain.setValueAtTime(Math.max(0.0001, ambBus.gain.value), now);
     ambBus.gain.linearRampToValueAtTime(0.0001, now + fade);
-    if (this.ambTimer !== null) {
-      window.clearInterval(this.ambTimer);
-      this.ambTimer = null;
-    }
     this.ambRunning = false;
-    this.pluckBus = null;
-    const nodes = this.ambNodes;
-    this.ambNodes = [];
+
+    if (!pauseElement || !piano) return;
     window.setTimeout(() => {
-      nodes.forEach((node) => {
-        try {
-          (node as OscillatorNode).stop?.();
-          node.disconnect();
-        } catch {
-          /* node already stopped */
-        }
-      });
-    }, (fade + 0.2) * 1000);
+      if (this.ambRunning) return;
+      piano.pause();
+      piano.muted = true;
+    }, (fade + 0.15) * 1000);
   }
 }
 

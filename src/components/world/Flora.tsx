@@ -11,6 +11,19 @@ function villageCenter(): { x: number; z: number } {
   return { x: point.x + 12, z: point.z };
 }
 
+// Keep grass and trees off the brick road itself.
+const ROAD_CLEARANCE = 4;
+function nearRoad(x: number, z: number): boolean {
+  const steps = 64;
+  for (let i = 0; i <= steps; i += 1) {
+    const p = pathPoint(i / steps);
+    const dx = x - p.x;
+    const dz = z - p.z;
+    if (dx * dx + dz * dz < ROAD_CLEARANCE * ROAD_CLEARANCE) return true;
+  }
+  return false;
+}
+
 function buildFlora(): THREE.BufferGeometry {
   const random = mulberry32(90210);
   const builder = new LineBuilder();
@@ -24,6 +37,7 @@ function buildFlora(): THREE.BufferGeometry {
     const z = Math.sin(angle) * radius;
 
     if (Math.hypot(x - village.x, z - village.z) < 24) continue;
+    if (nearRoad(x, z)) continue;
 
     const ground = terrainHeight(x, z);
     const blades = 2 + Math.floor(random() * 3);
@@ -44,6 +58,7 @@ function buildFlora(): THREE.BufferGeometry {
     const x = Math.cos(angle) * radius;
     const z = Math.sin(angle) * radius;
     if (Math.hypot(x - village.x, z - village.z) < 26) continue;
+    if (nearRoad(x, z)) continue;
 
     const ground = terrainHeight(x, z);
     const trunkHeight = 7 + random() * 6;
