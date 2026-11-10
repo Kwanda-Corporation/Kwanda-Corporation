@@ -57,6 +57,25 @@ const VALUES = [
   },
 ];
 
+const BELIEFS = [
+  'Great technology begins with understanding real problems.',
+  'Innovation should produce practical results, not just impressive demonstrations.',
+  'Software should be designed around people, not the other way around.',
+  'African challenges deserve world-class technological solutions.',
+  'Creativity and engineering are complementary disciplines.',
+  'A product is never finished — it evolves through experience and feedback.',
+  'Small beginnings should never limit the scale of an idea.',
+];
+
+const APPROACH = [
+  { n: '01', title: 'Discover', copy: 'Identify problems and opportunities in existing industries and communities.' },
+  { n: '02', title: 'Imagine', copy: 'Explore creative approaches and develop a clear product vision.' },
+  { n: '03', title: 'Design', copy: 'Transform ideas into meaningful user experiences and system architectures.' },
+  { n: '04', title: 'Engineer', copy: 'Build functional, reliable and scalable software.' },
+  { n: '05', title: 'Launch', copy: 'Introduce products to real users and operational environments.' },
+  { n: '06', title: 'Evolve', copy: 'Learn from usage, feedback, challenges and changing needs.' },
+];
+
 export function AboutContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   useReveal(rootRef);
@@ -76,8 +95,9 @@ export function AboutContent() {
           <em>meets</em> software.
         </h1>
         <p className="experience-lede" data-reveal>
-          KWANDA CORPORATIONS is a technology company focused on creating
-          meaningful digital products and solutions.
+          Kwanda Corporations is a Rwanda-origin technology company focused on
+          designing, developing and building digital products, software systems
+          and technology-driven solutions that address real-world challenges.
         </p>
       </section>
 
@@ -89,12 +109,18 @@ export function AboutContent() {
           <h2 className="section-title">Who we are</h2>
           <div className="section-copy">
             <p>
-              KWANDA CORPORATIONS is a technology company focused on creating
-              meaningful digital products and solutions.
+              Founded on the belief that technology should serve people and solve
+              meaningful problems, Kwanda Corporations brings together software
+              engineering, creativity, innovation and entrepreneurship to
+              transform ideas into practical products.
             </p>
             <p>
-              We bring together creativity, engineering and problem-solving to
-              build technology that addresses real-world challenges.
+              We are a product-oriented technology company — interested in
+              identifying problems, developing solutions, launching products,
+              learning from real users, and continuously improving the systems we
+              build. Our work is aimed at building technology that can grow
+              beyond its initial market, serve communities and contribute to the
+              digital transformation of Africa.
             </p>
           </div>
         </div>
@@ -105,27 +131,47 @@ export function AboutContent() {
           02
         </div>
         <div className="section-body">
-          <h2 className="section-title">Our story</h2>
+          <h2 className="section-title">The meaning of Kwanda</h2>
           <div className="story">
             <p className="story-lede">
-              Kwanda exists to turn ideas into things people can actually use.
+              The name Kwanda comes from the Kinyarwanda word for expanding,
+              growing and increasing.
             </p>
             <p>
-              We set out to build digital products, and to treat the craft of
-              building them as part of the product itself. Behind every screen is
-              a series of choices about how something should feel, how it should
-              be understood and how it should serve the person using it.
+              That meaning reflects the company&apos;s philosophy: growth should not
+              be limited to the company itself. Technology should expand
+              opportunities, improve access to services, connect people and
+              create possibilities that did not previously exist.
             </p>
             <p>
-              The journey is rarely a straight line. Ideas begin as sketches and
-              questions, pass through prototypes and dead ends, and only become
-              solutions through patient engineering and a willingness to keep
-              listening.
+              It represents an ambition to grow from Rwanda into a company whose
+              products and innovations can serve the wider African market — and
+              eventually international markets.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="about-section" data-reveal>
+        <div className="section-index" aria-hidden="true">
+          03
+        </div>
+        <div className="section-body">
+          <h2 className="section-title">Vision &amp; mission</h2>
+          <div className="story">
+            <p className="story-lede">Our vision</p>
             <p>
-              We are guided by a simple ambition — to expand what technology can
-              make possible for the people who use it. That story is still being
-              written.
+              To become a leading African technology company known for creating
+              innovative digital products, intelligent systems and technological
+              solutions that improve how people live, work, travel, learn and
+              interact with the world.
+            </p>
+            <p className="story-lede">Our mission</p>
+            <p>
+              To identify meaningful challenges, combine creativity with
+              engineering, and build accessible, reliable and scalable technology
+              products that create lasting value for individuals, businesses and
+              communities.
             </p>
           </div>
         </div>
@@ -133,7 +179,7 @@ export function AboutContent() {
 
       <section className="about-philosophy" data-reveal aria-labelledby="philosophy-title">
         <div className="philosophy-index" aria-hidden="true">
-          03
+          04
         </div>
         <p className="philosophy-kicker">Our philosophy</p>
         <h2 className="philosophy-title" id="philosophy-title">
@@ -142,15 +188,44 @@ export function AboutContent() {
           meets software.
         </h2>
         <p className="philosophy-copy">
-          We believe technology is not only about functionality. It is also
-          about imagination, design, creativity and the experience people have
-          when they interact with it.
+          Exceptional technology requires more than writing code. It requires
+          imagination, thoughtful design, engineering discipline and an
+          understanding of the people who will use the final product.
         </p>
+        <ul className="philosophy-beliefs">
+          {BELIEFS.map((belief) => (
+            <li key={belief}>{belief}</li>
+          ))}
+        </ul>
       </section>
 
       <section className="about-section about-values" data-reveal>
         <div className="section-index" aria-hidden="true">
-          04
+          05
+        </div>
+        <div className="section-body">
+          <h2 className="section-title">Our approach</h2>
+          <p className="approach-intro">
+            Kwanda follows a product-oriented approach — building real products
+            that people can actually use.
+          </p>
+          <div className="approach">
+            {APPROACH.map((step) => (
+              <div className="approach-step" key={step.n}>
+                <span className="approach-n" aria-hidden="true">
+                  {step.n}
+                </span>
+                <h3 className="approach-title">{step.title}</h3>
+                <p className="approach-copy">{step.copy}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="about-section about-values" data-reveal>
+        <div className="section-index" aria-hidden="true">
+          06
         </div>
         <div className="section-body">
           <h2 className="section-title">Our values</h2>

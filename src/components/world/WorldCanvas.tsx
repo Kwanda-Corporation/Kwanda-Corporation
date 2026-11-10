@@ -10,6 +10,7 @@ import {
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useAudio } from '../../hooks/useAudio';
 import { LANDMARKS, type LandmarkId } from '../../lib/landmarks';
 import { JOURNEY_STOPS } from '../../lib/journey';
 import { ExperienceTransition } from '../transitions/ExperienceTransition';
@@ -85,6 +86,7 @@ export default function WorldCanvas() {
   const terrainRef = useRef<THREE.Mesh>(null);
   const apiRef = useRef<NavigationApi | null>(null);
   const reduced = useReducedMotion();
+  const { pauseAmbience, resumeAmbience } = useAudio();
   const [ready, setReady] = useState(false);
   const [webgl] = useState(supportsWebGL2);
 
@@ -118,6 +120,7 @@ export default function WorldCanvas() {
       closeTimer.current = null;
     }
     setExperience(id);
+    pauseAmbience();
 
     const info = LANDMARKS[id];
     api?.flyTo({
@@ -127,12 +130,13 @@ export default function WorldCanvas() {
       azimuth: info.view.azimuth,
       elevation: info.view.elevation,
     });
-  }, []);
+  }, [pauseAmbience]);
 
   const closeExperience = useCallback(() => {
     if (experienceRef.current === null) return;
     experienceRef.current = null;
     setClosing(true);
+    resumeAmbience();
 
     const api = apiRef.current;
     const view = savedView.current;
@@ -143,7 +147,7 @@ export default function WorldCanvas() {
       setExperience(null);
       setClosing(false);
     }, 520);
-  }, []);
+  }, [resumeAmbience]);
 
   const startJourney = useCallback(() => {
     const api = apiRef.current;

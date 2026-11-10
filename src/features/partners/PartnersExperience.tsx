@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
-import { PARTNERS, PARTNER_CATEGORIES } from './partners';
+import { PARTNERS, PARTNER_CATEGORIES, type Partner } from './partners';
 
 /**
  * THE CONNECTION PLAZA — the organisations and relationships that support
- * Kwanda's ecosystem. The data lives in `partners.ts`; each partner is shown
- * with its category, relationship and (when available) a link out.
+ * Kwanda's ecosystem. Each partner is shown with its logo (or a clean wordmark
+ * when no logo is bundled), category, relationship and a link out.
  */
 export function PartnersExperience() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -22,13 +22,11 @@ export function PartnersExperience() {
           <br />
           <em>Plaza</em>
         </h1>
-        <p className="experience-tagline" data-reveal>
-          Meaningful technology grows through collaboration.
-        </p>
         <p className="experience-lede" data-reveal>
-          The organisations, businesses and technology providers that contribute
-          to Kwanda&apos;s work — listed only where a real relationship exists, and
-          never implied where it does not.
+          Meaningful technology grows through collaboration. The institutions,
+          transport operators and technology providers that contribute to
+          Kwanda&apos;s work — each listed for what the relationship actually is,
+          and never overstated.
         </p>
       </section>
 
@@ -40,9 +38,9 @@ export function PartnersExperience() {
           <h2 className="section-title">Our connections</h2>
           <div className="section-copy">
             <p>
-              Partners are organised by the nature of the relationship — strategic,
-              technology, infrastructure and operational — so each connection is
-              understood for what it actually is.
+              Partners are organised by the nature of the relationship — the
+              institutions and regulators that shape the ecosystem, the operators
+              Katisha serves, and the technology platforms that underpin the work.
             </p>
           </div>
         </div>
@@ -51,7 +49,7 @@ export function PartnersExperience() {
       {PARTNERS.length === 0 ? (
         <EmptyState
           title="Connections being confirmed"
-          copy="Verified partners will appear here once relationships are established and confirmed. A service provider or integration is only listed when the relationship is real."
+          copy="Verified partners will appear here once relationships are established and confirmed."
         />
       ) : (
         <div className="partner-grid" data-reveal>
@@ -62,29 +60,78 @@ export function PartnersExperience() {
               <section className="partner-group" key={category.id}>
                 <h3 className="partner-group-title">{category.label}</h3>
                 {members.map((partner) => (
-                  <article className="partner" key={partner.id}>
-                    <h4 className="partner-name">{partner.name}</h4>
-                    <p className="partner-copy">{partner.description}</p>
-                    <p className="partner-relationship">{partner.relationship}</p>
-                    {partner.website ? (
-                      <a
-                        className="partner-link"
-                        href={partner.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Visit ↗
-                      </a>
-                    ) : null}
-                  </article>
+                  <PartnerCard key={partner.id} partner={partner} />
                 ))}
               </section>
             );
           })}
         </div>
       )}
+
+      <section className="about-philosophy" data-reveal aria-labelledby="partners-statement">
+        <div className="philosophy-index" aria-hidden="true">
+          02
+        </div>
+        <p className="philosophy-kicker">Our partnership principle</p>
+        <h2 className="philosophy-title" id="partners-statement">
+          Build relationships that create
+          <br />
+          <span className="accent-word">measurable value.</span>
+        </h2>
+        <p className="philosophy-copy">
+          Kwanda is interested in working with organisations that share an
+          interest in innovation, digital transformation and solving practical
+          challenges — across transportation, digital payments, infrastructure,
+          education and beyond.
+        </p>
+      </section>
+
+      <section className="about-close" data-reveal>
+        <p className="about-close-line" aria-hidden="true" />
+        <p className="about-close-title">The art of connection.</p>
+        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+      </section>
     </div>
   );
+}
+
+function PartnerCard({ partner }: { partner: Partner }) {
+  return (
+    <article className="partner">
+      <div className="partner-logo" aria-hidden="true">
+        {partner.logo ? (
+          <img src={partner.logo} alt="" loading="lazy" />
+        ) : (
+          <span className="partner-monogram">{monogram(partner.name)}</span>
+        )}
+      </div>
+      <div className="partner-body">
+        <h4 className="partner-name">{partner.name}</h4>
+        <p className="partner-copy">{partner.description}</p>
+        <p className="partner-relationship">{partner.relationship}</p>
+        {partner.website ? (
+          <a
+            className="partner-link"
+            href={partner.website}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit ↗
+          </a>
+        ) : null}
+      </div>
+    </article>
+  );
+}
+
+function monogram(name: string): string {
+  const words = name.split(/\s+/).filter(Boolean);
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return words
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
 }
 
 function EmptyState({ title, copy }: { title: string; copy: string }) {

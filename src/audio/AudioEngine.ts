@@ -18,8 +18,10 @@ class AudioEngine {
   private master: GainNode | null = null;
   private musicBus: GainNode | null = null;
   private percBus: GainNode | null = null;
+  private percComp: DynamicsCompressorNode | null = null;
   private ambBus: GainNode | null = null;
   private noise: AudioBuffer | null = null;
+  private drone: { oscillators: OscillatorNode[]; gain: GainNode } | null = null;
 
   private percTimer: number | null = null;
   private step = 0;
@@ -68,7 +70,17 @@ class AudioEngine {
 
         this.percBus = ctx.createGain();
         this.percBus.gain.value = 0;
-        this.percBus.connect(this.musicBus);
+
+        // Punch the intro drums hard and keep the low end from clipping.
+        this.percComp = ctx.createDynamicsCompressor();
+        this.percComp.threshold.value = -20;
+        this.percComp.knee.value = 14;
+        this.percComp.ratio.value = 8;
+        this.percComp.attack.value = 0.004;
+        this.percComp.release.value = 0.22;
+
+        this.percBus.connect(this.percComp);
+        this.percComp.connect(this.musicBus);
 
         this.ambBus = ctx.createGain();
         this.ambBus.gain.value = 0;
@@ -148,7 +160,9 @@ class AudioEngine {
     const bus = this.percBus;
     bus.gain.cancelScheduledValues(now);
     bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), now);
-    bus.gain.linearRampToValueAtTime(0.9, now + 0.7);
+    bus.gain.linearRampToValueAtTime(1, now + 0.7);
+
+    this.startDrone();
 
     this.scheduler();
     if (this.percTimer === null) {
@@ -187,14 +201,17 @@ class AudioEngine {
     if (!bus) return;
 
     if (PATTERN.dunun.includes(step)) this.dunun(time, bus);
-    if (PATTERN.low.includes(step)) this.membrane(time, 148, 68, 0.55, 0.34, bus);
-    if (PATTERN.tone.includes(step)) this.membrane(time, 302, 232, 0.3, 0.19, bus);
+    if (PATTERN.low.includes(step)) this.membrane(time, 122, 52, 0.56, 0.42, bus);
+    if (PATTERN.tone.includes(step)) this.membrane(time, 292, 214, 0.32, 0.22, bus);
     if (PATTERN.slap.includes(step)) this.slap(time, bus);
     if (PATTERN.bell.includes(step)) this.bell(time, bus);
     if (PATTERN.shaker.includes(step)) {
       const accent = step % 4 === 2 ? 1.5 : step % 2 === 0 ? 1 : 0.7;
       this.shaker(time, bus, accent);
     }
+
+    // Two cinematic sub-booms per bar give the intro its scale and dread.
+    if (step === 0 || step === 8) this.impact(time, bus);
 
     if (step === 3 || step === 11) this.shaker(time + STEP_DURATION * 0.5, bus, 0.6);
   }
@@ -234,27 +251,129 @@ class AudioEngine {
 
     const osc = ctx.createOscillator();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(74, time);
-    osc.frequency.exponentialRampToValueAtTime(42, time + 0.32);
+    osc.frequency.setValueAtTime(64, time);
+    osc.frequency.exponentialRampToValueAtTime(32, time + 0.38);
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, time);
-    gain.gain.exponentialRampToValueAtTime(0.6, time + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.55);
+    gain.gain.exponentialRampToValueAtTime(0.92, time + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.72);
 
     osc.connect(gain);
     gain.connect(dest);
     osc.start(time);
-    osc.stop(time + 0.6);
+    osc.stop(time + 0.78);
 
-    this.noiseHit(time, 'lowpass', 420, 0.7, 0.16, 0.1, dest);
+    this.noiseHit(time, 'lowpass', 380, 0.7, 0.3, 0.16, dest);
+  }
+
+  /** A deep sub drop that lands with the heaviest beats of the intro. */
+  private impact(time: number, dest: AudioNode): void {
+    const ctx = this.ctx;
+    if (!ctx) return;
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(96, time);
+    osc.frequency.exponentialRampToValueAtTime(26, time + 0.6);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(1, time + 0.014);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 1.15);
+
+    osc.connect(gain);
+    gain.connect(dest);
+    osc.start(time);
+    osc.stop(time + 1.2);
+
+    this.noiseHit(time, 'lowpass', 300, 0.9, 0.36, 0.42, dest);
+  }
+
+  /**
+   * A dissonant low drone under the drum intro. A minor-ish cluster (D / F /
+   * B-flat) with a slow filter wobble — felt more than heard, and deliberately
+   * uneasy.
+   */
+  private startDrone(): void {
+    const ctx = this.ctx;
+    const bus = this.percBus;
+    if (!ctx || !bus || this.drone) return;
+
+    const now = ctx.currentTime;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.24, now + 1.5);
+    gain.connect(bus);
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 210;
+    filter.Q.value = 7;
+    filter.connect(gain);
+
+    const oscillators: OscillatorNode[] = [];
+    const layers = [
+      { freq: 36.7, type: 'sine' as OscillatorType, detune: 0, level: 1 },
+      { freq: 43.65, type: 'sawtooth' as OscillatorType, detune: -9, level: 0.18 },
+      { freq: 58.27, type: 'sawtooth' as OscillatorType, detune: 7, level: 0.1 },
+      // A semitone-separated mid cluster that beats uneasily above the sub.
+      { freq: 146.8, type: 'triangle' as OscillatorType, detune: -6, level: 0.1 },
+      { freq: 155.6, type: 'triangle' as OscillatorType, detune: 8, level: 0.08 },
+    ];
+
+    layers.forEach((layer) => {
+      const osc = ctx.createOscillator();
+      osc.type = layer.type;
+      osc.frequency.value = layer.freq;
+      osc.detune.value = layer.detune;
+      const level = ctx.createGain();
+      level.gain.value = layer.level;
+      osc.connect(level);
+      level.connect(filter);
+      osc.start(now);
+      oscillators.push(osc);
+    });
+
+    // A slow wobble in the filter that never quite settles.
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.21;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 70;
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    lfo.start(now);
+    oscillators.push(lfo);
+
+    this.drone = { oscillators, gain };
+  }
+
+  private stopDrone(fade = 1.1): void {
+    const ctx = this.ctx;
+    const drone = this.drone;
+    if (!ctx || !drone) return;
+    this.drone = null;
+
+    const now = ctx.currentTime;
+    drone.gain.gain.cancelScheduledValues(now);
+    drone.gain.gain.setValueAtTime(Math.max(0.0001, drone.gain.gain.value), now);
+    drone.gain.gain.exponentialRampToValueAtTime(0.0001, now + fade);
+
+    drone.oscillators.forEach((osc) => {
+      try {
+        osc.stop(now + fade + 0.05);
+      } catch {
+        /* already stopped */
+      }
+    });
   }
 
   private slap(time: number, dest: AudioNode): void {
     const ctx = this.ctx;
     if (!ctx) return;
 
-    this.noiseHit(time, 'bandpass', 2600, 1.1, 0.2, 0.075, dest);
+    this.noiseHit(time, 'bandpass', 2600, 1.1, 0.34, 0.075, dest);
 
     const osc = ctx.createOscillator();
     osc.type = 'triangle';
@@ -262,7 +381,7 @@ class AudioEngine {
     osc.frequency.exponentialRampToValueAtTime(360, time + 0.07);
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, time);
-    gain.gain.exponentialRampToValueAtTime(0.16, time + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.26, time + 0.004);
     gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.09);
     osc.connect(gain);
     gain.connect(dest);
@@ -276,7 +395,7 @@ class AudioEngine {
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, time);
-    gain.gain.exponentialRampToValueAtTime(0.055, time + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.08, time + 0.004);
     gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.32);
     gain.connect(dest);
 
@@ -344,6 +463,7 @@ class AudioEngine {
         bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), now);
         bus.gain.linearRampToValueAtTime(0.0001, now + 1.8);
       }
+      this.stopDrone(1.6);
       window.setTimeout(() => {
         if (this.percTimer !== null) {
           window.clearInterval(this.percTimer);
@@ -378,6 +498,7 @@ class AudioEngine {
     this.stage = 'idle';
     this.started = false;
     this.ambFresh = true;
+    this.stopDrone(0.7);
     this.stopAmbience(0.7);
 
     if (this.percTimer !== null) {
@@ -400,6 +521,25 @@ class AudioEngine {
         });
       }, 900);
     }
+  }
+
+  /**
+   * Fade the world score out (and pause its loop) when the traveller opens an
+   * editorial page. The engine keeps its `ambience` stage and `started` flag,
+   * so the score can be brought straight back without a fresh gesture.
+   */
+  pauseAmbience(fade = 0.6): void {
+    if (this.stage !== 'ambience' || !this.started) return;
+    this.stopAmbience(fade, true);
+  }
+
+  /**
+   * Bring the world score back when the traveller returns to the landscape.
+   * No-op unless the score was already playing and merely paused for a page.
+   */
+  resumeAmbience(): void {
+    if (this.stage !== 'ambience' || !this.started) return;
+    this.startAmbience();
   }
 
   private startAmbience(): void {

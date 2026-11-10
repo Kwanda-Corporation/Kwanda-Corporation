@@ -37,7 +37,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     kicker: 'About us',
     // Western plateau — a pavilion on its own, reached across the valley.
     position: { x: -150, z: -40 },
-    markerHeight: 21,
+    markerHeight: 20,
     nearRadius: 48,
     // Aligned with the pavilion's entry axis for a symmetric approach.
     view: { distance: 58, azimuth: 0.58, elevation: 0.3 },
@@ -49,7 +49,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     kicker: 'Transportation technology',
     // Northern reach of the play area, a long trek from the starting valley.
     position: { x: 30, z: -150 },
-    markerHeight: 22,
+    markerHeight: 19,
     nearRadius: 48,
     view: { distance: 58, azimuth: -0.3, elevation: 0.3 },
   },
@@ -60,7 +60,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     kicker: 'Student transport & routing',
     // South-eastern plains, the third distinct quarter of the landscape.
     position: { x: 120, z: 100 },
-    markerHeight: 23,
+    markerHeight: 18,
     nearRadius: 48,
     view: { distance: 56, azimuth: 4.1, elevation: 0.32 },
   },
@@ -71,7 +71,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     kicker: 'Achievements',
     // Eastern reach of the play area — a gallery on its own plateau.
     position: { x: 150, z: 0 },
-    markerHeight: 24,
+    markerHeight: 21,
     nearRadius: 52,
     view: { distance: 58, azimuth: 0.5, elevation: 0.3 },
   },
@@ -82,7 +82,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     kicker: 'Partners',
     // South-western plains — an open plaza for collaboration.
     position: { x: -140, z: 130 },
-    markerHeight: 24,
+    markerHeight: 17,
     nearRadius: 54,
     view: { distance: 58, azimuth: 0.9, elevation: 0.3 },
   },
@@ -93,7 +93,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     kicker: 'Our team',
     // Southern hills — the studio where the work happens.
     position: { x: 0, z: 170 },
-    markerHeight: 24,
+    markerHeight: 19,
     nearRadius: 50,
     view: { distance: 58, azimuth: 0.3, elevation: 0.3 },
   },

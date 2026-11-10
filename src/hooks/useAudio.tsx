@@ -17,6 +17,8 @@ type AudioContextValue = {
   enterWorld: () => void;
   enableAmbience: () => Promise<void>;
   disableAudio: () => void;
+  pauseAmbience: () => void;
+  resumeAmbience: () => void;
   setMuted: (muted: boolean) => void;
   setVolume: (volume: number) => void;
 };
@@ -95,6 +97,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setStarted(false);
   }, []);
 
+  const pauseAmbience = useCallback(() => {
+    audioEngine.pauseAmbience();
+  }, []);
+
+  const resumeAmbience = useCallback(() => {
+    audioEngine.resumeAmbience();
+  }, []);
+
   const value = useMemo<AudioContextValue>(
     () => ({
       started,
@@ -104,6 +114,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       enterWorld,
       enableAmbience,
       disableAudio,
+      pauseAmbience,
+      resumeAmbience,
       setMuted,
       setVolume,
     }),
@@ -115,6 +127,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       enterWorld,
       enableAmbience,
       disableAudio,
+      pauseAmbience,
+      resumeAmbience,
       setMuted,
       setVolume,
     ],

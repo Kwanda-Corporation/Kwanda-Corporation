@@ -10,6 +10,7 @@ type ProjectLandmarkProps = {
   reduced: boolean;
   rotation?: number;
   haloRadius: number;
+  haloY?: number;
   hitbox: {
     position: [number, number, number];
     size: [number, number, number];
@@ -28,6 +29,7 @@ export function ProjectLandmark({
   reduced,
   rotation = 0,
   haloRadius,
+  haloY = 0.9,
   hitbox,
   children,
 }: ProjectLandmarkProps) {
@@ -45,7 +47,7 @@ export function ProjectLandmark({
     <group position={[info.position.x, baseY, info.position.z]} rotation-y={rotation}>
       {children}
 
-      <LandmarkHalo id={id} radius={haloRadius} y={0.9} reduced={reduced} />
+      <LandmarkHalo id={id} radius={haloRadius} y={haloY} reduced={reduced} />
       <LandmarkMarker
         id={id}
         name={info.name}

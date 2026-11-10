@@ -22,13 +22,10 @@ export function AchievementsExperience() {
           <br />
           <em>Gallery</em>
         </h1>
-        <p className="experience-tagline" data-reveal>
-          Our journey, recorded milestone by milestone.
-        </p>
         <p className="experience-lede" data-reveal>
-          A growing archive of Kwanda&apos;s real progress — the moments, products
-          and achievements that mark how far the work has come, presented only as
-          they are verified.
+          Our journey, recorded milestone by milestone — a growing archive of
+          Kwanda&apos;s real progress. The moments, products and achievements that
+          mark how far the work has come, published only as they are verified.
         </p>
       </section>
 
@@ -41,7 +38,8 @@ export function AchievementsExperience() {
           <div className="section-copy">
             <p>
               Each milestone below is confirmed before it is published. Dates are
-              shown only when they are known for certain.
+              shown only when they are known for certain — nothing is described
+              as an achievement until it has actually happened.
             </p>
           </div>
         </div>
@@ -66,12 +64,48 @@ export function AchievementsExperience() {
                 <h3 className="milestone-title">{milestone.title}</h3>
                 {milestone.date ? <p className="milestone-date">{milestone.date}</p> : null}
                 <p className="milestone-copy">{milestone.description}</p>
+                {milestone.image ? (
+                  <figure className="milestone-figure">
+                    <img
+                      src={milestone.image}
+                      alt={milestone.imageCaption ?? milestone.title}
+                      loading="lazy"
+                    />
+                    {milestone.imageCaption ? (
+                      <figcaption>{milestone.imageCaption}</figcaption>
+                    ) : null}
+                  </figure>
+                ) : null}
                 <p className="milestone-why">{milestone.why}</p>
               </div>
             </article>
           ))}
         </div>
       )}
+
+      <section className="about-philosophy" data-reveal aria-labelledby="achievements-statement">
+        <div className="philosophy-index" aria-hidden="true">
+          02
+        </div>
+        <p className="philosophy-kicker">Our definition of achievement</p>
+        <h2 className="philosophy-title" id="achievements-statement">
+          An idea,
+          <br />
+          <span className="accent-word">in use.</span>
+        </h2>
+        <p className="philosophy-copy">
+          For Kwanda, one of the most important achievements is seeing an idea
+          become something people can actually use. Meaningful innovation is a
+          continuous process — of experimentation, engineering, persistence and
+          learning.
+        </p>
+      </section>
+
+      <section className="about-close" data-reveal>
+        <p className="about-close-line" aria-hidden="true" />
+        <p className="about-close-title">The art of progress.</p>
+        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+      </section>
     </div>
   );
 }

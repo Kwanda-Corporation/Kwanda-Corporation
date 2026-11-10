@@ -1,57 +1,53 @@
+import { DetailLines, NodeRing, type DetailSegment } from '../architecture/Architecture';
 import {
-  Accents,
-  DetailLines,
-  NodeRing,
-  VolumeEdges,
-  Volumes,
-  type ArchitectureVolume,
-  type DetailSegment,
-} from '../architecture/Architecture';
+  TraditionalGround,
+  TraditionalHouses,
+  type TraditionalHouseSpec,
+} from '../architecture/TraditionalHouse';
 import { ProjectLandmark } from '../projects/ProjectLandmark';
 
 /**
- * THE CONNECTION PLAZA — an open architectural plaza of collaboration.
+ * THE CONNECTION PLAZA — a traditional meeting compound.
  *
- * A broad white plinth ringed by four low pavilions, a central installation,
- * and thin orange lines drawn between the structures to suggest the
- * connections that hold the ecosystem together.
+ * Four family houses sit at the corners of an open earth court, gathered around
+ * a central meeting house. Thin orange lines drawn between the structures
+ * suggest the connections that hold the ecosystem together.
  */
-const VOLUMES: ArchitectureVolume[] = [
-  // Broad plaza plinth.
-  { x: 0, y: -1.4, z: 0, w: 58, h: 2.6, d: 44, tone: 'shade' },
-  { x: 0, y: 0.2, z: 0, w: 56, h: 0.6, d: 42, tone: 'white' },
-  // Four perimeter pavilions.
-  { x: -20, y: 2.4, z: -14, w: 12, h: 4.6, d: 10, tone: 'white' },
-  { x: 20, y: 2.4, z: -14, w: 12, h: 4.6, d: 10, tone: 'white' },
-  { x: -20, y: 2.4, z: 14, w: 12, h: 4.6, d: 10, tone: 'white' },
-  { x: 20, y: 2.4, z: 14, w: 12, h: 4.6, d: 10, tone: 'white' },
-  // Central collaboration installation.
-  { x: 0, y: 4, z: 0, w: 4, h: 12, d: 4, tone: 'white' },
-  { x: 0, y: 12.4, z: 0, w: 14, h: 0.5, d: 14, tone: 'white' },
-  // Two entry markers.
-  { x: -4, y: 1.6, z: -18, w: 1.6, h: 3.4, d: 1.6, tone: 'white' },
-  { x: 4, y: 1.6, z: -18, w: 1.6, h: 3.4, d: 1.6, tone: 'white' },
+const HOUSES: TraditionalHouseSpec[] = [
+  // Corner family houses.
+  { x: -20, z: -14, radius: 4.6, wallHeight: 3, roofHeight: 4.4, rotation: 0.6 },
+  { x: 20, z: -14, radius: 4.6, wallHeight: 3, roofHeight: 4.4, rotation: -0.9 },
+  { x: -20, z: 14, radius: 4.4, wallHeight: 2.9, roofHeight: 4.2, rotation: 2.1, wall: 'earth' },
+  { x: 20, z: 14, radius: 4.4, wallHeight: 2.9, roofHeight: 4.2, rotation: 1.4, wall: 'earth' },
+  // The meeting house at the centre.
+  { x: 0, z: 0, radius: 3.2, wallHeight: 2.4, roofHeight: 3.6, rotation: 0.2, wall: 'shade' },
 ];
 
-const ACCENTS: ArchitectureVolume[] = [
-  { x: 0, y: 12.8, z: 0, w: 14, h: 0.12, d: 0.12 },
-  { x: -20, y: 4.9, z: -14, w: 12.1, h: 0.1, d: 0.1 },
-  { x: 20, y: 4.9, z: -14, w: 12.1, h: 0.1, d: 0.1 },
-  { x: -20, y: 4.9, z: 14, w: 12.1, h: 0.1, d: 0.1 },
-  { x: 20, y: 4.9, z: 14, w: 12.1, h: 0.1, d: 0.1 },
-];
+const PAD = 1.8;
+
+function ring(radius: number, y = PAD + 0.06, count = 56): DetailSegment[] {
+  return Array.from({ length: count }, (_, i) => {
+    const a = (i / count) * Math.PI * 2;
+    const b = ((i + 1) / count) * Math.PI * 2;
+    return {
+      a: [Math.cos(a) * radius, y, Math.sin(a) * radius] as [number, number, number],
+      b: [Math.cos(b) * radius, y, Math.sin(b) * radius] as [number, number, number],
+    };
+  });
+}
 
 const DETAILS: DetailSegment[] = [
-  // Plaza outline.
-  { a: [-28, 0.55, -21], b: [28, 0.55, -21] },
-  { a: [-28, 0.55, 21], b: [28, 0.55, 21] },
-  { a: [-28, 0.55, -21], b: [-28, 0.55, 21] },
-  { a: [28, 0.55, -21], b: [28, 0.55, 21] },
-  // Connection lines from the centre to each pavilion.
-  { a: [0, 0.6, 0], b: [-20, 0.6, -14], accent: true },
-  { a: [0, 0.6, 0], b: [20, 0.6, -14], accent: true },
-  { a: [0, 0.6, 0], b: [-20, 0.6, 14], accent: true },
-  { a: [0, 0.6, 0], b: [20, 0.6, 14], accent: true },
+  // Plaza perimeter.
+  ...ring(30.4),
+
+  // Connection lines from the centre to each house.
+  { a: [0, PAD + 0.1, 0], b: [-20, PAD + 0.1, -14], accent: true },
+  { a: [0, PAD + 0.1, 0], b: [20, PAD + 0.1, -14], accent: true },
+  { a: [0, PAD + 0.1, 0], b: [-20, PAD + 0.1, 14], accent: true },
+  { a: [0, PAD + 0.1, 0], b: [20, PAD + 0.1, 14], accent: true },
+
+  // Entry threshold.
+  { a: [-5, PAD + 0.12, -18], b: [5, PAD + 0.12, -18], accent: true },
 ];
 
 export function ConnectionPlaza({
@@ -67,18 +63,20 @@ export function ConnectionPlaza({
       onSelect={onSelect}
       reduced={reduced}
       haloRadius={34}
-      hitbox={{ position: [0, 6, 0], size: [62, 16, 48] }}
+      haloY={PAD + 0.02}
+      hitbox={{ position: [0, 5, 0], size: [62, 14, 50] }}
     >
-      <Volumes volumes={VOLUMES} />
-      <VolumeEdges volumes={VOLUMES} />
-      <Accents volumes={ACCENTS} />
+      <TraditionalGround radius={30.6} />
+      <group position={[0, PAD, 0]}>
+        <TraditionalHouses houses={HOUSES} />
+      </group>
       <DetailLines segments={DETAILS} />
 
-      <NodeRing x={0} z={0} y={0.7} radius={7} opacity={0.55} />
-      <NodeRing x={-20} z={-14} y={0.5} radius={1.6} opacity={0.4} />
-      <NodeRing x={20} z={-14} y={0.5} radius={1.6} opacity={0.4} />
-      <NodeRing x={-20} z={14} y={0.5} radius={1.6} opacity={0.4} />
-      <NodeRing x={20} z={14} y={0.5} radius={1.6} opacity={0.4} />
+      <NodeRing x={0} z={0} y={PAD + 0.5} radius={7} opacity={0.55} />
+      <NodeRing x={-20} z={-14} y={PAD + 0.35} radius={1.6} opacity={0.4} />
+      <NodeRing x={20} z={-14} y={PAD + 0.35} radius={1.6} opacity={0.4} />
+      <NodeRing x={-20} z={14} y={PAD + 0.35} radius={1.6} opacity={0.4} />
+      <NodeRing x={20} z={14} y={PAD + 0.35} radius={1.6} opacity={0.4} />
     </ProjectLandmark>
   );
 }

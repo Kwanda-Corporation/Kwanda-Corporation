@@ -1,100 +1,57 @@
+import { DetailLines, NodeRing, type DetailSegment } from '../architecture/Architecture';
 import {
-  Accents,
-  DetailLines,
-  NodeRing,
-  VolumeEdges,
-  Volumes,
-  type ArchitectureVolume,
-  type DetailSegment,
-} from '../architecture/Architecture';
+  TraditionalGround,
+  TraditionalHouses,
+  type TraditionalHouseSpec,
+} from '../architecture/TraditionalHouse';
 import { ProjectLandmark } from './ProjectLandmark';
 
 /**
- * KATISHA — a contemporary transport terminal.
+ * KATISHA — a traditional East African travel compound.
  *
- * Reading the building from the approach: a low deck, a colonnade holding a
- * long drop-off canopy, a glazed hall under a butterfly roof, and a slender
- * control tower marked in orange. The K monogram is drawn as linework on the
- * tower rather than applied as a texture, keeping the whole district light.
+ * A great thatched rondavel gathers the compound, ringed by smaller houses for
+ * ticketing, waiting and the station kiosk. Drawn orange lines mark the entry
+ * threshold and the bus bays on the earth, so the transport story stays legible
+ * without any of the modern architecture that used to stand here.
  */
-const VOLUMES: ArchitectureVolume[] = [
-  // Site deck and approach.
-  { x: 0, y: -2.2, z: 0, w: 34, h: 5.2, d: 24, tone: 'shade' },
-  { x: 0, y: 0.4, z: 0, w: 33, h: 0.8, d: 21, tone: 'white' },
-  { x: 0, y: -1.2, z: 12.8, w: 11, h: 4.4, d: 5, tone: 'shade' },
-  { x: 0, y: -0.2, z: 15.6, w: 13, h: 1.6, d: 2.4, tone: 'white' },
-
-  // Main hall with a black glazed band.
-  { x: 0, y: 4.2, z: -2, w: 25, h: 6.8, d: 12, tone: 'white' },
-  { x: -5.5, y: 5, z: 4.06, w: 10, h: 2.2, d: 0.16, tone: 'ink' },
-  { x: 6, y: 2.9, z: 4.06, w: 6.5, h: 3.4, d: 0.16, tone: 'ink' },
-
-  // Butterfly roof: two plates dipping into a central valley.
-  { x: -6.4, y: 8.5, z: -2, w: 12.8, h: 0.32, d: 13, rz: -0.1, tone: 'white' },
-  { x: 6.4, y: 8.5, z: -2, w: 12.8, h: 0.32, d: 13, rz: 0.1, tone: 'white' },
-  { x: 0, y: 7.98, z: -2, w: 0.3, h: 0.5, d: 13, tone: 'white' },
-
-  // Drop-off canopy and its colonnade.
-  { x: 0, y: 7, z: 7.2, w: 27, h: 0.34, d: 6.5, tone: 'white' },
-  { x: -10, y: 3.7, z: 6.5, w: 0.3, h: 6.4, d: 0.3, tone: 'white' },
-  { x: -5, y: 3.7, z: 6.5, w: 0.3, h: 6.4, d: 0.3, tone: 'white' },
-  { x: 0, y: 3.7, z: 6.5, w: 0.3, h: 6.4, d: 0.3, tone: 'white' },
-  { x: 5, y: 3.7, z: 6.5, w: 0.3, h: 6.4, d: 0.3, tone: 'white' },
-  { x: 10, y: 3.7, z: 6.5, w: 0.3, h: 6.4, d: 0.3, tone: 'white' },
-
-  // Ticket kiosk under the canopy.
-  { x: -8.2, y: 2.1, z: 8.6, w: 4.2, h: 2.6, d: 3, tone: 'white' },
-  { x: -8.2, y: 2.2, z: 10.12, w: 3.1, h: 1.1, d: 0.12, tone: 'ink' },
-
-  // Control tower and sign arm.
-  { x: 13.4, y: 7.6, z: -7, w: 2.6, h: 15.2, d: 2.6, tone: 'white' },
-  { x: 7.4, y: 14.2, z: -7, w: 12.2, h: 0.36, d: 0.5, tone: 'white' },
-  { x: 1.2, y: 13.8, z: -7, w: 0.36, h: 1.2, d: 0.5, tone: 'ink' },
-
-  // Western flag mast.
-  { x: -13.6, y: 5.6, z: -7, w: 0.36, h: 10.4, d: 0.36, tone: 'white' },
+const HOUSES: TraditionalHouseSpec[] = [
+  // The great hall at the heart of the compound.
+  { x: 0, z: -2, radius: 7.4, wallHeight: 4.2, roofHeight: 6.4, rotation: 0.2 },
+  // Ticketing and waiting houses flanking the court.
+  { x: -11, z: 4.5, radius: 3.6, wallHeight: 2.8, roofHeight: 3.8, rotation: 0.8, wall: 'earth' },
+  { x: 11, z: 4.2, radius: 3.4, wallHeight: 2.6, roofHeight: 3.6, rotation: -0.4 },
+  { x: -8.5, z: -11, radius: 2.8, wallHeight: 2.2, roofHeight: 3.1, rotation: 1.4, wall: 'shade' },
+  { x: 9, z: -11, radius: 2.6, wallHeight: 2.1, roofHeight: 3, rotation: 2.1, wall: 'earth' },
+  // The station kiosk facing the approach.
+  { x: -2.5, z: 12.5, radius: 2.6, wallHeight: 2.4, roofHeight: 3.2, rotation: 0.1 },
 ];
 
-const ACCENTS: ArchitectureVolume[] = [
-  { x: 13.4, y: 8.4, z: -5.62, w: 0.42, h: 9.2, d: 0.14 },
-  { x: 0, y: 7.18, z: 10.42, w: 27, h: 0.14, d: 0.14 },
-  { x: 0, y: 0.9, z: 12.2, w: 30, h: 0.08, d: 0.18 },
-  { x: 0, y: 13.98, z: -6.72, w: 11.4, h: 0.14, d: 0.14 },
-  { x: -13.6, y: 10.9, z: -7, w: 0.5, h: 0.5, d: 0.5 },
-];
+const PAD = 1.8;
+
+function ring(radius: number, y = PAD + 0.06, count = 48): DetailSegment[] {
+  return Array.from({ length: count }, (_, i) => {
+    const a = (i / count) * Math.PI * 2;
+    const b = ((i + 1) / count) * Math.PI * 2;
+    return {
+      a: [Math.cos(a) * radius, y, Math.sin(a) * radius] as [number, number, number],
+      b: [Math.cos(b) * radius, y, Math.sin(b) * radius] as [number, number, number],
+    };
+  });
+}
 
 const DETAILS: DetailSegment[] = [
-  // Deck edges.
-  { a: [-16.4, 0.86, -10.4], b: [16.4, 0.86, -10.4] },
-  { a: [-16.4, 0.86, 10.4], b: [16.4, 0.86, 10.4] },
-  { a: [-16.4, 0.86, -10.4], b: [-16.4, 0.86, 10.4] },
-  { a: [16.4, 0.86, -10.4], b: [16.4, 0.86, 10.4] },
+  // Compound perimeter.
+  ...ring(17.4),
 
-  // Hall outline on the deck.
-  { a: [-12.5, 0.9, -8], b: [12.5, 0.9, -8] },
-  { a: [-12.5, 0.9, 4], b: [12.5, 0.9, 4] },
-  { a: [-12.5, 0.9, -8], b: [-12.5, 0.9, 4] },
-  { a: [12.5, 0.9, -8], b: [12.5, 0.9, 4] },
-
-  // Canopy outline.
-  { a: [-13.5, 7.19, 3.95], b: [13.5, 7.19, 3.95] },
-  { a: [-13.5, 7.19, 10.45], b: [13.5, 7.19, 10.45] },
-  { a: [-13.5, 7.19, 3.95], b: [-13.5, 7.19, 10.45] },
-  { a: [13.5, 7.19, 3.95], b: [13.5, 7.19, 10.45] },
-
-  // Bus-bay markings.
+  // Bus-bay markings on the approach apron.
   ...[0, 1, 2, 3, 4, 5, 6, 7, 8].map<DetailSegment>((i) => ({
-    a: [-14 + i * 3.4, 0.95, 11.2],
-    b: [-11.2 + i * 3.4, 0.95, 11.2],
+    a: [-14 + i * 3.4, PAD + 0.08, 14.4],
+    b: [-11.2 + i * 3.4, PAD + 0.08, 14.4],
   })),
 
-  // K monogram on the tower face.
-  { a: [12.75, 10.1, -5.62], b: [12.75, 13.1, -5.62], accent: true },
-  { a: [12.75, 11.6, -5.62], b: [14.15, 13.1, -5.62], accent: true },
-  { a: [12.75, 11.6, -5.62], b: [14.15, 10.1, -5.62], accent: true },
-
-  // Threshold line at the foot of the approach.
-  { a: [-6.5, 0.72, 16.8], b: [6.5, 0.72, 16.8], accent: true },
+  // Threshold and entry axis at the foot of the approach.
+  { a: [-6.5, PAD + 0.1, 16.8], b: [6.5, PAD + 0.1, 16.8], accent: true },
+  { a: [0, PAD + 0.1, 13.2], b: [0, PAD + 0.1, 16.8], accent: true },
 ];
 
 export function KatishaLandmark({
@@ -111,16 +68,18 @@ export function KatishaLandmark({
       reduced={reduced}
       rotation={-0.3}
       haloRadius={22}
-      hitbox={{ position: [0, 7.5, 0], size: [36, 22, 32] }}
+      haloY={PAD + 0.02}
+      hitbox={{ position: [0, 5.5, 0], size: [38, 15, 36] }}
     >
-      <Volumes volumes={VOLUMES} />
-      <VolumeEdges volumes={VOLUMES} />
-      <Accents volumes={ACCENTS} />
+      <TraditionalGround radius={17.6} />
+      <group position={[0, PAD, 0]}>
+        <TraditionalHouses houses={HOUSES} />
+      </group>
       <DetailLines segments={DETAILS} />
 
-      <NodeRing x={0} z={14.2} y={0.75} radius={1.4} opacity={0.7} />
-      <NodeRing x={0} z={19} y={0.4} radius={2.4} opacity={0.28} />
-      <NodeRing x={-13.6} z={-7} y={0.6} radius={1.1} opacity={0.4} />
+      <NodeRing x={0} z={14.2} y={PAD + 0.75} radius={1.4} opacity={0.7} />
+      <NodeRing x={0} z={19} y={PAD + 0.4} radius={2.4} opacity={0.28} />
+      <NodeRing x={-13.6} z={-7} y={PAD + 0.6} radius={1.1} opacity={0.4} />
     </ProjectLandmark>
   );
 }

@@ -2,6 +2,7 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
+  useState,
   type ReactNode,
 } from 'react';
 import { LANDMARKS, LANDMARK_LIST, type LandmarkId } from '../../lib/landmarks';
@@ -19,10 +20,17 @@ const FOCUSABLE =
   'button, a[href], input, textarea, select, [tabindex]:not([tabindex="-1"])';
 
 /**
+ * Milliseconds the split panels take to close over the outgoing page before the
+ * incoming page is swapped in and the panels part again. Matches the 0.5s
+ * panel transition so the cut lands exactly at the seam.
+ */
+const BREAK_MS = 520;
+
+/**
  * The white editorial sheet that wraps every destination. It owns the top bar
- * (brand, destination nav, return-to-world), the scroll well, focus trapping and
- * the Escape shortcut so the individual experiences only have to describe their
- * own content.
+ * (brand, destination nav, return-to-world), the scroll well, focus trapping,
+ * the Escape shortcut and the split reveal — including the "break" transition
+ * used when travelling between destinations without returning to the world.
  */
 export function ExperienceTransition({
   active,
@@ -34,9 +42,40 @@ export function ExperienceTransition({
   const rootRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Reset scroll to the top whenever the destination changes.
+  // The destination currently on screen. It lags one beat behind `active` so
+  // the panels can close over the outgoing page before the new one appears.
+  const [view, setView] = useState<{ id: LandmarkId; content: ReactNode }>({
+    id: active,
+    content: children,
+  });
+  const [open, setOpen] = useState(false);
+  const prevActive = useRef(active);
+  const childrenRef = useRef(children);
+  childrenRef.current = children;
+
+  // Reset scroll to the top whenever the shown destination changes.
   useLayoutEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [view.id]);
+
+  // First reveal: part the panels once the sheet has mounted.
+  useEffect(() => {
+    const raf1 = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => setOpen(true));
+    });
+    return () => window.cancelAnimationFrame(raf1);
+  }, []);
+
+  // Page-to-page navigation: close over the outgoing page, swap, then reopen.
+  useEffect(() => {
+    if (prevActive.current === active) return;
+    prevActive.current = active;
+    setOpen(false);
+    const timer = window.setTimeout(() => {
+      setView({ id: active, content: childrenRef.current });
+      setOpen(true);
+    }, BREAK_MS);
+    return () => window.clearTimeout(timer);
   }, [active]);
 
   useEffect(() => {
@@ -80,7 +119,7 @@ export function ExperienceTransition({
 
   return (
     <>
-      <SplitReveal closing={closing} />
+      <SplitReveal open={open && !closing} />
       <div
         ref={rootRef}
         className={`experience${closing ? ' is-closing' : ''}`}
@@ -121,8 +160,8 @@ export function ExperienceTransition({
         </header>
 
         <div className="experience-scroll" ref={scrollRef}>
-          <div className="experience-content" key={active}>
-            {children}
+          <div className="experience-content" key={view.id}>
+            {view.content}
           </div>
         </div>
       </div>

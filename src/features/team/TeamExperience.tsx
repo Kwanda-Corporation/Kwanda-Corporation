@@ -22,13 +22,11 @@ export function TeamExperience() {
           <br />
           <em>Studio</em>
         </h1>
-        <p className="experience-tagline" data-reveal>
-          The people who imagine, design and build.
-        </p>
         <p className="experience-lede" data-reveal>
-          Kwanda is made by people — the individuals who turn ideas into
-          products. Each person here is introduced as themselves, not just a
-          role on an org chart.
+          Kwanda is made by people. Leadership sets the direction, engineering
+          turns ideas into products, and operations keeps everything running —
+          together, the team moves the company&apos;s work from ideas into
+          functioning systems.
         </p>
       </section>
 
@@ -40,9 +38,10 @@ export function TeamExperience() {
           <h2 className="section-title">The studio</h2>
           <div className="section-copy">
             <p>
-              Team members are presented as they are confirmed — real names,
-              real roles, real people. The studio is kept honest: no role is
-              filled on paper until a person actually holds it.
+              Building meaningful technology takes collaboration between people
+              with different strengths. Each member below is introduced with
+              their real name and role — described through what they do, without
+              invented biographies or credentials.
             </p>
           </div>
         </div>
@@ -63,12 +62,38 @@ export function TeamExperience() {
               <div className="member-body">
                 <h3 className="member-name">{member.name}</h3>
                 <p className="member-role">{member.role}</p>
+                {member.focus ? <p className="member-focus">{member.focus}</p> : null}
                 <p className="member-copy">{member.intro}</p>
               </div>
             </article>
           ))}
         </div>
       )}
+
+      <section className="about-philosophy" data-reveal aria-labelledby="team-statement">
+        <div className="philosophy-index" aria-hidden="true">
+          02
+        </div>
+        <p className="philosophy-kicker">Our team philosophy</p>
+        <h2 className="philosophy-title" id="team-statement">
+          Different strengths,
+          <br />
+          <span className="accent-word">one direction.</span>
+        </h2>
+        <p className="philosophy-copy">
+          Leadership establishes direction, engineering turns ideas into
+          products, and operations ensures those products and the business can
+          function effectively. Kwanda values creativity, responsibility,
+          technical excellence, collaboration and a shared commitment to
+          building useful technology.
+        </p>
+      </section>
+
+      <section className="about-close" data-reveal>
+        <p className="about-close-line" aria-hidden="true" />
+        <p className="about-close-title">The art of collaboration.</p>
+        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+      </section>
     </div>
   );
 }

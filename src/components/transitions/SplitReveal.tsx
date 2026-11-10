@@ -1,31 +1,19 @@
-import { useEffect, useState } from 'react';
-
 type SplitRevealProps = {
-  closing: boolean;
+  /** Whether the two environment panels are parted (revealing the sheet). */
+  open: boolean;
 };
 
 /**
  * The environment split: two full-bleed panels that part vertically — the top
- * rising, the bottom falling — to reveal the destination page behind them.
- * Reverses cleanly when returning to the world.
+ * rising, the bottom falling — to reveal a destination page behind them.
+ * Controlled from `ExperienceTransition`, which closes the panels over the old
+ * page, swaps the content, then reopens them for a clean "break" between
+ * destinations.
  */
-export function SplitReveal({ closing }: SplitRevealProps) {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    let raf2 = 0;
-    const raf1 = window.requestAnimationFrame(() => {
-      raf2 = window.requestAnimationFrame(() => setOpen(true));
-    });
-    return () => {
-      window.cancelAnimationFrame(raf1);
-      window.cancelAnimationFrame(raf2);
-    };
-  }, []);
-
+export function SplitReveal({ open }: SplitRevealProps) {
   return (
     <div
-      className={`split-reveal${open && !closing ? ' is-open' : ''}`}
+      className={`split-reveal${open ? ' is-open' : ''}`}
       aria-hidden="true"
     >
       <span className="split-panel split-panel-top" />
