@@ -1,6 +1,13 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useReveal } from '../../hooks/useReveal';
 import { MEDIA } from '../../lib/media';
+import {
+  ProcessArc,
+  RidgeArt,
+  RouteDiagram,
+  StackDiagram,
+  TractionChart,
+} from '../experience/ExperienceArt';
 import { KATISHA_URL } from './projects';
 
 const STEPS = [
@@ -19,57 +26,117 @@ const PROBLEMS = [
 ];
 
 /**
- * The product film, framed as a phone. No poster image: the video's first
- * frame stands in as the cover until the play button is pressed.
+ * The product film, now the living backdrop of the hero. It plays muted and
+ * looped behind the copy, pauses whenever the hero is scrolled away or the
+ * window loses focus, and offers one control so the motion can be stopped.
  */
-function KatishaFilm() {
+function KatishaHeroFilm() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const userPausedRef = useRef(false);
   const [playing, setPlaying] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
 
-  const play = () => {
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    void video.play().catch(() => {
-      /* the browser will retry on the next gesture */
-    });
+
+    const play = () => {
+      if (reducedMotion || document.hidden || userPausedRef.current) return;
+      void video.play().catch(() => {
+        /* autoplay can be refused; the toggle below still works */
+      });
+    };
+    const pause = () => video.pause();
+
+    if (reducedMotion) pause();
+    else play();
+
+    const onVisibility = () => {
+      if (document.hidden) pause();
+      else play();
+    };
+    const onBlur = () => pause();
+    const onFocus = () => play();
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('blur', onBlur);
+    window.addEventListener('focus', onFocus);
+
+    // Stop decoding once the hero has left the viewport.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) play();
+        else pause();
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(video);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('focus', onFocus);
+      observer.disconnect();
+      video.pause();
+    };
+  }, [reducedMotion]);
+
+  const toggle = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      userPausedRef.current = false;
+      void video.play().catch(() => {
+        /* no gesture / unsupported codec */
+      });
+    } else {
+      userPausedRef.current = true;
+      video.pause();
+    }
   };
 
   return (
-    <div className="katisha-hero-media" data-reveal>
-      <div className="katisha-phone">
-        <span className="katisha-phone-notch" aria-hidden="true" />
-        <div className="katisha-phone-screen">
-          <video
-            ref={videoRef}
-            className="katisha-phone-video"
-            playsInline
-            preload="auto"
-            controls={playing}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            onEnded={() => {
-              setPlaying(false);
-              if (videoRef.current) videoRef.current.currentTime = 0;
-            }}
-            aria-label="Katisha product film"
-          >
-            <source src={MEDIA.katishaVideo} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          {!playing && (
-            <button
-              type="button"
-              className="katisha-phone-play"
-              onClick={play}
-              aria-label="Play the Katisha film"
-            >
-              <span className="katisha-phone-play-ring" aria-hidden="true" />
-            </button>
-          )}
-        </div>
+    <>
+      <div className="katisha-hero-film" aria-hidden="true">
+        <video
+          ref={videoRef}
+          className="katisha-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          tabIndex={-1}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+        >
+          <source src={MEDIA.katishaVideo} type="video/mp4" />
+        </video>
+        <div className="katisha-hero-scrim" />
       </div>
-      <p className="katisha-phone-caption">Katisha — the journey, in motion.</p>
-    </div>
+      <button
+        type="button"
+        className="katisha-film-toggle"
+        onClick={toggle}
+        aria-label={playing ? 'Pause the Katisha film' : 'Play the Katisha film'}
+      >
+        <span
+          className="katisha-film-toggle-mark"
+          data-playing={playing}
+          aria-hidden="true"
+        />
+        {playing ? 'Pause film' : 'Play film'}
+      </button>
+    </>
   );
 }
 
@@ -80,6 +147,7 @@ export function KatishaProject() {
   return (
     <div className="project" ref={rootRef}>
       <section className="experience-hero katisha-hero" aria-labelledby="katisha-title">
+        <KatishaHeroFilm />
         <div className="katisha-hero-copy">
           <p className="experience-kicker" data-reveal>
             Project 01 · Travel technology
@@ -99,11 +167,12 @@ export function KatishaProject() {
             and more convenient, without a trip to the bus station.
           </p>
         </div>
-
-        <KatishaFilm />
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--split" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <RouteDiagram broken />
+        </div>
         <div className="section-index" aria-hidden="true">
           01
         </div>
@@ -124,7 +193,10 @@ export function KatishaProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--center" data-reveal>
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <ProcessArc />
+        </div>
         <div className="section-index" aria-hidden="true">
           02
         </div>
@@ -152,7 +224,7 @@ export function KatishaProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--media" data-reveal>
         <div className="section-index" aria-hidden="true">
           03
         </div>
@@ -180,7 +252,10 @@ export function KatishaProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--split" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <TractionChart />
+        </div>
         <div className="section-index" aria-hidden="true">
           04
         </div>
@@ -202,7 +277,10 @@ export function KatishaProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--right" data-reveal>
+        <div className="art-layer art-layer--lc" aria-hidden="true">
+          <StackDiagram />
+        </div>
         <div className="section-index" aria-hidden="true">
           05
         </div>
@@ -222,23 +300,32 @@ export function KatishaProject() {
       </section>
 
       <section className="about-philosophy" data-reveal aria-labelledby="katisha-ambition">
-        <div className="philosophy-index" aria-hidden="true">
-          06
+        <div className="art-layer art-layer--full" aria-hidden="true">
+          <RidgeArt variant="peaks" />
         </div>
-        <p className="philosophy-kicker">The ambition</p>
-        <h2 className="philosophy-title" id="katisha-ambition">
-          East African travel,
-          <br />
-          <span className="accent-word">booked in seconds.</span>
-        </h2>
-        <p className="philosophy-copy">
-          Katisha&apos;s broader vision is to make East African travel accessible
-          from anywhere — a connected travel ecosystem that makes regional
-          mobility easier through technology.
-        </p>
+        <div className="philosophy-grid">
+          <div className="philosophy-lead">
+            <div className="philosophy-index" aria-hidden="true">
+              06
+            </div>
+            <p className="philosophy-kicker">The ambition</p>
+            <h2 className="philosophy-title" id="katisha-ambition">
+              East African travel,
+              <br />
+              <span className="accent-word">booked in seconds.</span>
+            </h2>
+          </div>
+          <div className="philosophy-body">
+            <p className="philosophy-copy">
+              Katisha&apos;s broader vision is to make East African travel accessible
+              from anywhere — a connected travel ecosystem that makes regional
+              mobility easier through technology.
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section className="project-action" data-reveal>
+      <section className="project-action project-action--center" data-reveal>
         <p className="project-action-label">Visit the product</p>
         <a
           className="btn btn-primary project-cta"

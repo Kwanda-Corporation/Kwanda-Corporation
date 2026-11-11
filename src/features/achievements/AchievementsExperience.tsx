@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import { RidgeArt, TimelineArc } from '../experience/ExperienceArt';
 import { MILESTONES, MILESTONE_CATEGORIES } from './achievements';
 
 /**
@@ -14,6 +15,9 @@ export function AchievementsExperience() {
   return (
     <div className="project" ref={rootRef}>
       <section className="experience-hero" aria-labelledby="achievements-title">
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <TimelineArc />
+        </div>
         <p className="experience-kicker" data-reveal>
           Achievements · The Milestone Gallery
         </p>
@@ -29,7 +33,10 @@ export function AchievementsExperience() {
         </p>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--right" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <RidgeArt variant="dunes" />
+        </div>
         <div className="section-index" aria-hidden="true">
           01
         </div>
@@ -84,21 +91,30 @@ export function AchievementsExperience() {
       )}
 
       <section className="about-philosophy" data-reveal aria-labelledby="achievements-statement">
-        <div className="philosophy-index" aria-hidden="true">
-          02
+        <div className="art-layer art-layer--full" aria-hidden="true">
+          <RidgeArt variant="peaks" />
         </div>
-        <p className="philosophy-kicker">Our definition of achievement</p>
-        <h2 className="philosophy-title" id="achievements-statement">
-          An idea,
-          <br />
-          <span className="accent-word">in use.</span>
-        </h2>
-        <p className="philosophy-copy">
-          For Kwanda, one of the most important achievements is seeing an idea
-          become something people can actually use. Meaningful innovation is a
-          continuous process — of experimentation, engineering, persistence and
-          learning.
-        </p>
+        <div className="philosophy-grid">
+          <div className="philosophy-lead">
+            <div className="philosophy-index" aria-hidden="true">
+              02
+            </div>
+            <p className="philosophy-kicker">Our definition of achievement</p>
+            <h2 className="philosophy-title" id="achievements-statement">
+              An idea,
+              <br />
+              <span className="accent-word">in use.</span>
+            </h2>
+          </div>
+          <div className="philosophy-body">
+            <p className="philosophy-copy">
+              For Kwanda, one of the most important achievements is seeing an idea
+              become something people can actually use. Meaningful innovation is a
+              continuous process — of experimentation, engineering, persistence and
+              learning.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="about-close" data-reveal>

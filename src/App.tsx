@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { AudioProvider, useAudio } from './hooks/useAudio';
+import { AudioProvider } from './hooks/useAudio';
 import { OpeningScene } from './components/opening/OpeningScene';
 import { LoadingScreen } from './components/interface/LoadingScreen';
 
@@ -9,10 +9,8 @@ const WorldCanvas = lazy(() => import('./components/world/WorldCanvas'));
 function Experience() {
   const [stage, setStage] = useState<'opening' | 'world'>('opening');
   const curtainRef = useRef<HTMLDivElement>(null);
-  const { enterWorld } = useAudio();
 
   const handleEnterWorld = useCallback(() => {
-    enterWorld();
     setStage('world');
 
     const curtain = curtainRef.current;
@@ -33,7 +31,7 @@ function Experience() {
       { opacity: 1, scaleX: 1, duration: 0.9, delay: 0.25, ease: 'power3.out' },
     );
     gsap.to(line, { opacity: 0, duration: 0.9, delay: 1.25, ease: 'power2.in' });
-  }, [enterWorld]);
+  }, []);
 
   return (
     <div className="app">

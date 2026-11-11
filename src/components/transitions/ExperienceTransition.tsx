@@ -153,7 +153,12 @@ export function ExperienceTransition({
             ))}
           </nav>
 
-          <button type="button" className="experience-return" onClick={onClose}>
+          <button
+            type="button"
+            className="experience-return"
+            onClick={onClose}
+            aria-label="Return to the world"
+          >
             <span>Return to world</span>
             <span className="experience-return-mark" aria-hidden="true" />
           </button>

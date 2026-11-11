@@ -60,6 +60,21 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   }, [muted, volume]);
 
+  // Do not keep synthesising audio (or scheduling drum nodes) while the page is
+  // hidden or the user has switched to another window. This is what stops the
+  // score from carrying on over whatever else is on screen.
+  useEffect(() => {
+    const sync = () => audioEngine.setPageHidden(document.hidden || !document.hasFocus());
+    document.addEventListener('visibilitychange', sync);
+    window.addEventListener('blur', sync);
+    window.addEventListener('focus', sync);
+    return () => {
+      document.removeEventListener('visibilitychange', sync);
+      window.removeEventListener('blur', sync);
+      window.removeEventListener('focus', sync);
+    };
+  }, []);
+
   const setMuted = useCallback((next: boolean) => {
     setMutedState(next);
     audioEngine.setMuted(next);

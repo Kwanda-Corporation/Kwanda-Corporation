@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import { OrbitDiagram, RidgeArt } from '../experience/ExperienceArt';
 import { TEAM } from './team';
 
 /**
@@ -14,6 +15,9 @@ export function TeamExperience() {
   return (
     <div className="project" ref={rootRef}>
       <section className="experience-hero" aria-labelledby="team-title">
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <OrbitDiagram />
+        </div>
         <p className="experience-kicker" data-reveal>
           Our team · The Creative Studio
         </p>
@@ -30,7 +34,10 @@ export function TeamExperience() {
         </p>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--right" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <RidgeArt variant="valley" />
+        </div>
         <div className="section-index" aria-hidden="true">
           01
         </div>
@@ -71,22 +78,31 @@ export function TeamExperience() {
       )}
 
       <section className="about-philosophy" data-reveal aria-labelledby="team-statement">
-        <div className="philosophy-index" aria-hidden="true">
-          02
+        <div className="art-layer art-layer--full" aria-hidden="true">
+          <RidgeArt variant="peaks" />
         </div>
-        <p className="philosophy-kicker">Our team philosophy</p>
-        <h2 className="philosophy-title" id="team-statement">
-          Different strengths,
-          <br />
-          <span className="accent-word">one direction.</span>
-        </h2>
-        <p className="philosophy-copy">
-          Leadership establishes direction, engineering turns ideas into
-          products, and operations ensures those products and the business can
-          function effectively. Kwanda values creativity, responsibility,
-          technical excellence, collaboration and a shared commitment to
-          building useful technology.
-        </p>
+        <div className="philosophy-grid">
+          <div className="philosophy-lead">
+            <div className="philosophy-index" aria-hidden="true">
+              02
+            </div>
+            <p className="philosophy-kicker">Our team philosophy</p>
+            <h2 className="philosophy-title" id="team-statement">
+              Different strengths,
+              <br />
+              <span className="accent-word">one direction.</span>
+            </h2>
+          </div>
+          <div className="philosophy-body">
+            <p className="philosophy-copy">
+              Leadership establishes direction, engineering turns ideas into
+              products, and operations ensures those products and the business can
+              function effectively. Kwanda values creativity, responsibility,
+              technical excellence, collaboration and a shared commitment to
+              building useful technology.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="about-close" data-reveal>

@@ -30,6 +30,8 @@ class AudioEngine {
 
   private ambRunning = false;
   private ambFresh = true;
+  /** True while an editorial page has deliberately muted the world score. */
+  private ambSuppressed = false;
   private piano: HTMLAudioElement | null = null;
   private pianoSource: MediaElementAudioSourceNode | null = null;
 
@@ -38,6 +40,7 @@ class AudioEngine {
   private muted = false;
   private volume = 0.62;
   private suspendToken = 0;
+  private hidden = false;
 
   getStage(): Stage {
     return this.stage;
@@ -164,9 +167,13 @@ class AudioEngine {
 
     this.startDrone();
 
-    this.scheduler();
-    if (this.percTimer === null) {
-      this.percTimer = window.setInterval(this.scheduler, 40);
+    // While the window is backgrounded or blurred no audible nodes should be
+    // scheduled; setPageHidden(false) restarts the loop when it returns.
+    if (!this.hidden) {
+      this.scheduler();
+      if (this.percTimer === null) {
+        this.percTimer = window.setInterval(this.scheduler, 40);
+      }
     }
     return true;
   }
@@ -241,6 +248,10 @@ class AudioEngine {
     gain.connect(dest);
     osc.start(time);
     osc.stop(time + decay + 0.05);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
 
     this.noiseHit(time, 'bandpass', 900, 0.9, level * 0.22, decay * 0.35, dest);
   }
@@ -263,6 +274,10 @@ class AudioEngine {
     gain.connect(dest);
     osc.start(time);
     osc.stop(time + 0.78);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
 
     this.noiseHit(time, 'lowpass', 380, 0.7, 0.3, 0.16, dest);
   }
@@ -286,6 +301,10 @@ class AudioEngine {
     gain.connect(dest);
     osc.start(time);
     osc.stop(time + 1.2);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
 
     this.noiseHit(time, 'lowpass', 300, 0.9, 0.36, 0.42, dest);
   }
@@ -362,6 +381,7 @@ class AudioEngine {
 
     drone.oscillators.forEach((osc) => {
       try {
+        osc.onended = () => osc.disconnect();
         osc.stop(now + fade + 0.05);
       } catch {
         /* already stopped */
@@ -387,6 +407,10 @@ class AudioEngine {
     gain.connect(dest);
     osc.start(time);
     osc.stop(time + 0.1);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
   }
 
   private bell(time: number, dest: AudioNode): void {
@@ -449,11 +473,57 @@ class AudioEngine {
     const offset = Math.random() * 0.6;
     source.start(time, offset);
     source.stop(time + decay + 0.03);
+    source.onended = () => {
+      source.disconnect();
+      filter.disconnect();
+      gain.disconnect();
+    };
+  }
+
+  /**
+   * Stop producing sound (and new audio nodes) when the tab is backgrounded.
+   * A hidden tab should not keep a synthesizer loop running on the CPU.
+   */
+  setPageHidden(hidden: boolean): void {
+    if (this.hidden === hidden) return;
+    this.hidden = hidden;
+    const ctx = this.ctx;
+
+    if (hidden) {
+      if (this.percTimer !== null) {
+        window.clearInterval(this.percTimer);
+        this.percTimer = null;
+      }
+      if (this.stage === 'ambience') this.stopAmbience(0.2);
+      if (ctx && ctx.state === 'running') {
+        void ctx.suspend().catch(() => {
+          /* the browser can refuse to suspend in the background */
+        });
+      }
+      return;
+    }
+
+    if (!ctx) return;
+    if (this.started && ctx.state === 'suspended') {
+      void ctx.resume().catch(() => {
+        /* a later gesture will retry */
+      });
+    }
+
+    if (!this.started) return;
+    if (this.stage === 'percussion') {
+      if (this.percTimer === null) {
+        this.percTimer = window.setInterval(this.scheduler, 40);
+      }
+    } else if (this.stage === 'ambience' && !this.ambSuppressed) {
+      this.startAmbience();
+    }
   }
 
   async enterWorld(): Promise<void> {
     if (!this.ctx) return;
     if (this.ctx.state === 'suspended') await this.ctx.resume();
+    this.ambSuppressed = false;
 
     if (this.stage === 'percussion') {
       const now = this.ctx.currentTime;
@@ -481,6 +551,7 @@ class AudioEngine {
     const ready = await this.ensure();
     if (!ready) return false;
     this.started = true;
+    this.ambSuppressed = false;
     if (this.stage !== 'percussion') this.stage = 'ambience';
     this.startAmbience();
     return true;
@@ -498,6 +569,7 @@ class AudioEngine {
     this.stage = 'idle';
     this.started = false;
     this.ambFresh = true;
+    this.ambSuppressed = false;
     this.stopDrone(0.7);
     this.stopAmbience(0.7);
 
@@ -530,6 +602,7 @@ class AudioEngine {
    */
   pauseAmbience(fade = 0.6): void {
     if (this.stage !== 'ambience' || !this.started) return;
+    this.ambSuppressed = true;
     this.stopAmbience(fade, true);
   }
 
@@ -539,6 +612,7 @@ class AudioEngine {
    */
   resumeAmbience(): void {
     if (this.stage !== 'ambience' || !this.started) return;
+    this.ambSuppressed = false;
     this.startAmbience();
   }
 
@@ -546,6 +620,10 @@ class AudioEngine {
     const ctx = this.ctx;
     const ambBus = this.ambBus;
     if (!ctx || !ambBus) return;
+
+    // Never (re)start audible playback while the page is hidden or the window
+    // is unfocused; setPageHidden(false) starts it again on return.
+    if (this.hidden) return;
 
     this.preparePiano();
     const piano = this.piano;

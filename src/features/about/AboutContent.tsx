@@ -1,5 +1,11 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import {
+  CompassRose,
+  GrowthRings,
+  ProcessArc,
+  RidgeArt,
+} from '../experience/ExperienceArt';
 
 const VALUES = [
   {
@@ -83,6 +89,9 @@ export function AboutContent() {
   return (
     <div className="about" ref={rootRef}>
       <section className="experience-hero" aria-labelledby="about-title">
+        <div className="art-layer art-layer--hero" aria-hidden="true">
+          <RidgeArt variant="range" />
+        </div>
         <div className="experience-hero-art" aria-hidden="true">
           <PavilionArt />
         </div>
@@ -101,7 +110,10 @@ export function AboutContent() {
         </p>
       </section>
 
-      <section className="about-section" data-reveal>
+      <section className="about-section section--right" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <RidgeArt variant="dunes" />
+        </div>
         <div className="section-index" aria-hidden="true">
           01
         </div>
@@ -126,7 +138,10 @@ export function AboutContent() {
         </div>
       </section>
 
-      <section className="about-section" data-reveal>
+      <section className="about-section section--split" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <GrowthRings />
+        </div>
         <div className="section-index" aria-hidden="true">
           02
         </div>
@@ -152,7 +167,10 @@ export function AboutContent() {
         </div>
       </section>
 
-      <section className="about-section" data-reveal>
+      <section className="about-section section--right" data-reveal>
+        <div className="art-layer art-layer--lc" aria-hidden="true">
+          <CompassRose />
+        </div>
         <div className="section-index" aria-hidden="true">
           03
         </div>
@@ -178,28 +196,40 @@ export function AboutContent() {
       </section>
 
       <section className="about-philosophy" data-reveal aria-labelledby="philosophy-title">
-        <div className="philosophy-index" aria-hidden="true">
-          04
+        <div className="art-layer art-layer--full" aria-hidden="true">
+          <RidgeArt variant="peaks" />
         </div>
-        <p className="philosophy-kicker">Our philosophy</p>
-        <h2 className="philosophy-title" id="philosophy-title">
-          Where art
-          <br />
-          meets software.
-        </h2>
-        <p className="philosophy-copy">
-          Exceptional technology requires more than writing code. It requires
-          imagination, thoughtful design, engineering discipline and an
-          understanding of the people who will use the final product.
-        </p>
-        <ul className="philosophy-beliefs">
-          {BELIEFS.map((belief) => (
-            <li key={belief}>{belief}</li>
-          ))}
-        </ul>
+        <div className="philosophy-grid">
+          <div className="philosophy-lead">
+            <div className="philosophy-index" aria-hidden="true">
+              04
+            </div>
+            <p className="philosophy-kicker">Our philosophy</p>
+            <h2 className="philosophy-title" id="philosophy-title">
+              Where art
+              <br />
+              meets software.
+            </h2>
+          </div>
+          <div className="philosophy-body">
+            <p className="philosophy-copy">
+              Exceptional technology requires more than writing code. It requires
+              imagination, thoughtful design, engineering discipline and an
+              understanding of the people who will use the final product.
+            </p>
+            <ul className="philosophy-beliefs">
+              {BELIEFS.map((belief) => (
+                <li key={belief}>{belief}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <section className="about-section about-values" data-reveal>
+      <section className="about-section about-values section--center" data-reveal>
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <ProcessArc />
+        </div>
         <div className="section-index" aria-hidden="true">
           05
         </div>
@@ -223,7 +253,10 @@ export function AboutContent() {
         </div>
       </section>
 
-      <section className="about-section about-values" data-reveal>
+      <section className="about-section about-values section--offset" data-reveal>
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <RidgeArt variant="peaks" />
+        </div>
         <div className="section-index" aria-hidden="true">
           06
         </div>

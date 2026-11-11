@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { LANDMARK_LIST, landmarkRegistry } from '../../lib/landmarks';
 import { clamp } from '../../lib/noise';
+import { noteRenderActivity } from '../../lib/renderActivity';
 import { clampToPlayArea, terrainHeight } from '../../lib/terrain';
 import {
   driveViewAt,
@@ -47,7 +48,7 @@ const ROUTE_POINTS = 48;
 const damp = THREE.MathUtils.damp;
 
 export function CameraController({ terrainRef, apiRef, reduced }: CameraControllerProps) {
-  const { camera, gl } = useThree();
+  const { camera, gl, scene } = useThree();
 
   const home = useMemo(() => homeView(), []);
 
@@ -120,19 +121,27 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
 
     // Expose the camera for integration tests and headless verification.
     if (import.meta.env.DEV) {
-      const scope = globalThis as typeof globalThis & { __kwandaCamera?: THREE.Camera };
+      const scope = globalThis as typeof globalThis & {
+        __kwandaCamera?: THREE.Camera;
+        __kwandaScene?: THREE.Scene;
+      };
       scope.__kwandaCamera = camera;
+      scope.__kwandaScene = scene;
     }
 
     return () => {
       route.geometry.dispose();
       (route.material as THREE.Material).dispose();
       if (import.meta.env.DEV) {
-        const scope = globalThis as typeof globalThis & { __kwandaCamera?: THREE.Camera };
+        const scope = globalThis as typeof globalThis & {
+          __kwandaCamera?: THREE.Camera;
+          __kwandaScene?: THREE.Scene;
+        };
         if (scope.__kwandaCamera === camera) scope.__kwandaCamera = undefined;
+        if (scope.__kwandaScene === scene) scope.__kwandaScene = undefined;
       }
     };
-  }, [camera, route, home]);
+  }, [camera, route, home, scene]);
 
   useEffect(() => {
     const cancelDrive = () => {
@@ -148,16 +157,19 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     apiRef.current = {
       zoomIn: () => {
         cancelDrive();
+        noteRenderActivity(1600);
         const s = motion.current;
         s.targetDistance = clamp(s.targetDistance * 0.82, MIN_DISTANCE, MAX_DISTANCE);
       },
       zoomOut: () => {
         cancelDrive();
+        noteRenderActivity(1600);
         const s = motion.current;
         s.targetDistance = clamp(s.targetDistance * 1.22, MIN_DISTANCE, MAX_DISTANCE);
       },
       reset: () => {
         cancelDrive();
+        noteRenderActivity(2000);
         const s = motion.current;
         const ground = terrainHeight(home.focusX, home.focusZ) + 1.4;
         s.targetFocus.set(home.focusX, ground, home.focusZ);
@@ -169,6 +181,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
       },
       flyTo: (view) => {
         cancelDrive();
+        noteRenderActivity(2200);
         const s = motion.current;
         const ground = terrainHeight(view.focusX, view.focusZ) + 1.4;
         s.targetFocus.set(view.focusX, ground, view.focusZ);
@@ -195,6 +208,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
         d.toT = toT;
         d.startTime = performance.now();
         d.duration = reduced ? 0 : DRIVE_DURATION_MS;
+        noteRenderActivity(d.duration + 600);
         d.onDone = opts?.onDone ?? null;
         d.onCancel = opts?.onCancel ?? null;
         motion.current.hasTarget = false;
@@ -239,6 +253,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     };
 
     const setDestination = (x: number, z: number) => {
+      noteRenderActivity(1800);
       const constrained = clampToPlayArea(x, z);
       const ground = terrainHeight(constrained.x, constrained.z) + 1.4;
       s.targetFocus.set(constrained.x, ground, constrained.z);
@@ -328,6 +343,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     };
 
     const onPointerDown = (event: PointerEvent) => {
+      noteRenderActivity(1000);
       const drive = motion.current.drive;
       if (drive.active) {
         drive.active = false;
@@ -355,6 +371,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      noteRenderActivity(500);
       const previous = pointers.get(event.pointerId);
       if (!previous) {
         if (!pointerDown && event.pointerType === 'mouse') {
@@ -438,6 +455,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
 
     const onWheel = (event: WheelEvent) => {
       event.preventDefault();
+      noteRenderActivity(900);
       const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
       const factor = Math.exp(delta * 0.0011);
       s.targetDistance = clamp(s.targetDistance * factor, MIN_DISTANCE, MAX_DISTANCE);
@@ -446,6 +464,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+      noteRenderActivity(900);
       if (event.key === '+' || event.key === '=') {
         s.targetDistance = clamp(s.targetDistance * 0.82, MIN_DISTANCE, MAX_DISTANCE);
       } else if (event.key === '-' || event.key === '_') {
@@ -495,6 +514,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     // between the mountains instead of drifting toward each sign.
     const drive = s.drive;
     if (drive.active) {
+      noteRenderActivity(400);
       const now = performance.now();
       let progress = drive.duration > 0 ? (now - drive.startTime) / drive.duration : 1;
       const finished = progress >= 1;
@@ -538,6 +558,17 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     s.azimuth = damp(s.azimuth, s.targetAzimuth, turnLambda, dt);
     s.elevation = damp(s.elevation, s.targetElevation, turnLambda, dt);
 
+    // Keep the high frame rate only while something is actually travelling.
+    // Once the easing has settled the scheduler drops back to the idle cadence.
+    const settling =
+      Math.abs(s.distance - s.targetDistance) > 0.02 ||
+      Math.abs(s.azimuth - s.targetAzimuth) > 0.0008 ||
+      Math.abs(s.elevation - s.targetElevation) > 0.0008 ||
+      Math.abs(s.focus.x - s.targetFocus.x) > 0.02 ||
+      Math.abs(s.focus.z - s.targetFocus.z) > 0.02 ||
+      Math.abs(s.framing - s.targetFraming) > 0.002;
+    if (settling) noteRenderActivity(240);
+
     for (const info of LANDMARK_LIST) {
       const distanceToFocus = Math.hypot(
         s.focus.x - info.position.x,
@@ -578,6 +609,7 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
 
     const life = s.markerLife;
     const pulse = reduced ? 0 : Math.sin(time * 3.1) * 0.05;
+    if (life > 0.015) noteRenderActivity(240);
 
     if (markerRef.current) {
       markerRef.current.visible = life > 0.015;

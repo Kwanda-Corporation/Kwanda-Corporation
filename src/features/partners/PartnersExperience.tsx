@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import { NetworkDiagram, RidgeArt } from '../experience/ExperienceArt';
 import { PARTNERS, PARTNER_CATEGORIES, type Partner } from './partners';
 
 /**
@@ -14,6 +15,9 @@ export function PartnersExperience() {
   return (
     <div className="project" ref={rootRef}>
       <section className="experience-hero" aria-labelledby="partners-title">
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <NetworkDiagram />
+        </div>
         <p className="experience-kicker" data-reveal>
           Partners · The Connection Plaza
         </p>
@@ -30,7 +34,10 @@ export function PartnersExperience() {
         </p>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--right" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <RidgeArt variant="valley" />
+        </div>
         <div className="section-index" aria-hidden="true">
           01
         </div>
@@ -69,21 +76,30 @@ export function PartnersExperience() {
       )}
 
       <section className="about-philosophy" data-reveal aria-labelledby="partners-statement">
-        <div className="philosophy-index" aria-hidden="true">
-          02
+        <div className="art-layer art-layer--full" aria-hidden="true">
+          <RidgeArt variant="range" />
         </div>
-        <p className="philosophy-kicker">Our partnership principle</p>
-        <h2 className="philosophy-title" id="partners-statement">
-          Build relationships that create
-          <br />
-          <span className="accent-word">measurable value.</span>
-        </h2>
-        <p className="philosophy-copy">
-          Kwanda is interested in working with organisations that share an
-          interest in innovation, digital transformation and solving practical
-          challenges — across transportation, digital payments, infrastructure,
-          education and beyond.
-        </p>
+        <div className="philosophy-grid">
+          <div className="philosophy-lead">
+            <div className="philosophy-index" aria-hidden="true">
+              02
+            </div>
+            <p className="philosophy-kicker">Our partnership principle</p>
+            <h2 className="philosophy-title" id="partners-statement">
+              Build relationships that create
+              <br />
+              <span className="accent-word">measurable value.</span>
+            </h2>
+          </div>
+          <div className="philosophy-body">
+            <p className="philosophy-copy">
+              Kwanda is interested in working with organisations that share an
+              interest in innovation, digital transformation and solving practical
+              challenges — across transportation, digital payments, infrastructure,
+              education and beyond.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="about-close" data-reveal>

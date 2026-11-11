@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { useRef, useSyncExternalStore } from 'react';
 import type * as THREE from 'three';
 import { landmarkRegistry, type LandmarkId } from '../../lib/landmarks';
+import { noteRenderActivity } from '../../lib/renderActivity';
 
 type LandmarkMarkerProps = {
   id: LandmarkId;
@@ -48,6 +49,7 @@ export function LandmarkMarker({
     const target = active ? 1 : 0;
     glowRef.current += (target - glowRef.current) * Math.min(1, dt * 5);
     const glow = glowRef.current;
+    if (Math.abs(target - glow) > 0.01) noteRenderActivity(240);
 
     if (lineRef.current) lineRef.current.opacity = 0.16 + glow * 0.6;
     if (diamondMaterialRef.current) diamondMaterialRef.current.opacity = 0.35 + glow * 0.65;
@@ -140,6 +142,7 @@ export function LandmarkHalo({
     const dt = Math.min(0.05, delta);
     const target = landmarkRegistry.isActive(id) ? 1 : 0;
     glowRef.current += (target - glowRef.current) * Math.min(1, dt * 4.2);
+    if (Math.abs(target - glowRef.current) > 0.01) noteRenderActivity(240);
     if (materialRef.current) {
       const breathe = reduced ? 1 : 0.86 + Math.sin(state.clock.elapsedTime * 1.1) * 0.14;
       materialRef.current.opacity = glowRef.current * 0.34 * breathe;

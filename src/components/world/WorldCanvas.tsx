@@ -27,7 +27,12 @@ import { Scene } from './Scene';
 function supportsWebGL2(): boolean {
   try {
     const canvas = document.createElement('canvas');
-    return Boolean(window.WebGL2RenderingContext && canvas.getContext('webgl2'));
+    const gl = canvas.getContext('webgl2');
+    if (!gl) return false;
+    // Release the probe context immediately: browsers cap the number of live
+    // WebGL contexts, and a throwaway one can starve the real renderer.
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return true;
   } catch {
     return false;
   }
@@ -92,6 +97,7 @@ export default function WorldCanvas() {
 
   const [experience, setExperience] = useState<LandmarkId | null>(null);
   const [closing, setClosing] = useState(false);
+  const [scenePaused, setScenePaused] = useState(false);
   const savedView = useRef<CameraView | null>(null);
   const experienceRef = useRef<LandmarkId | null>(null);
   const closeTimer = useRef<number | null>(null);
@@ -184,6 +190,18 @@ export default function WorldCanvas() {
     [],
   );
 
+  // The destination sheet is opaque, so there is nothing to draw behind it.
+  // Stop the WebGL loop once the opening transition has settled, and resume as
+  // soon as the sheet starts to close.
+  useEffect(() => {
+    if (experience === null || closing) {
+      setScenePaused(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setScenePaused(true), 700);
+    return () => window.clearTimeout(timer);
+  }, [experience, closing]);
+
   if (!webgl) return <WebGLFallback />;
 
   // Only the sign the traveller is approaching is shown, so the road reveals
@@ -196,17 +214,21 @@ export default function WorldCanvas() {
     <div className="world">
       <CanvasBoundary fallback={<WebGLFallback />}>
         <Canvas
-          dpr={[1, lowPower ? 1.35 : 1.75]}
+          frameloop="demand"
+          dpr={[1, lowPower ? 1 : 1.5]}
           gl={{
             antialias: true,
             alpha: true,
             stencil: false,
             depth: true,
-            powerPreference: 'high-performance',
+            powerPreference: 'default',
           }}
           camera={{ fov: 48, near: 0.4, far: 2200, position: [28, 0, -210] }}
           onCreated={({ gl }) => {
             gl.setClearColor(0x000000, 0);
+            if (import.meta.env.DEV) {
+              (globalThis as typeof globalThis & { __kwandaRenderer?: typeof gl }).__kwandaRenderer = gl;
+            }
             setReady(true);
           }}
         >
@@ -218,6 +240,7 @@ export default function WorldCanvas() {
             onSelectLandmark={openExperience}
             onStartJourney={startJourney}
             activeSignKey={activeSignKey}
+            paused={scenePaused}
           />
         </Canvas>
       </CanvasBoundary>

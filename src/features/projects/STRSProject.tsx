@@ -1,6 +1,12 @@
 import { useRef, useState } from 'react';
 import { useReveal } from '../../hooks/useReveal';
 import { MEDIA } from '../../lib/media';
+import {
+  NetworkDiagram,
+  ProcessArc,
+  RidgeArt,
+  RouteDiagram,
+} from '../experience/ExperienceArt';
 
 const AUDIENCES = [
   {
@@ -41,6 +47,9 @@ export function STRSProject() {
   return (
     <div className="project" ref={rootRef}>
       <section className="experience-hero" aria-labelledby="strs-title">
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <NetworkDiagram />
+        </div>
         <p className="experience-kicker" data-reveal>
           Project 02 · Education &amp; transportation technology
         </p>
@@ -60,7 +69,10 @@ export function STRSProject() {
         </p>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--split" data-reveal>
+        <div className="art-layer art-layer--bl" aria-hidden="true">
+          <NetworkDiagram variant="fragmented" />
+        </div>
         <div className="section-index" aria-hidden="true">
           01
         </div>
@@ -82,7 +94,10 @@ export function STRSProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--center" data-reveal>
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <RidgeArt variant="dunes" />
+        </div>
         <div className="section-index" aria-hidden="true">
           02
         </div>
@@ -100,11 +115,14 @@ export function STRSProject() {
       </section>
 
       <section
-        className={`project-section project-system${focused ? ' is-focused' : ''}`}
+        className={`project-section section--right project-system${focused ? ' is-focused' : ''}`}
         ref={systemRef}
         data-reveal
         aria-labelledby="strs-system-title"
       >
+        <div className="art-layer art-layer--lc" aria-hidden="true">
+          <ProcessArc />
+        </div>
         <div className="section-index" aria-hidden="true">
           03
         </div>
@@ -140,7 +158,7 @@ export function STRSProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--media" data-reveal>
         <div className="section-index" aria-hidden="true">
           04
         </div>
@@ -164,7 +182,10 @@ export function STRSProject() {
         </div>
       </section>
 
-      <section className="project-section" data-reveal>
+      <section className="project-section section--offset" data-reveal>
+        <div className="art-layer art-layer--br" aria-hidden="true">
+          <RouteDiagram />
+        </div>
         <div className="section-index" aria-hidden="true">
           05
         </div>
@@ -183,23 +204,32 @@ export function STRSProject() {
       </section>
 
       <section className="about-philosophy" data-reveal aria-labelledby="strs-ambition">
-        <div className="philosophy-index" aria-hidden="true">
-          06
+        <div className="art-layer art-layer--full" aria-hidden="true">
+          <RidgeArt variant="peaks" />
         </div>
-        <p className="philosophy-kicker">The ambition</p>
-        <h2 className="philosophy-title" id="strs-ambition">
-          Coordination,
-          <br />
-          <span className="accent-word">made visible.</span>
-        </h2>
-        <p className="philosophy-copy">
-          The goal is simple: clearer coordination could mean safer journeys,
-          fewer missed trips, and less time lost to confusion between schools,
-          families and operators.
-        </p>
+        <div className="philosophy-grid">
+          <div className="philosophy-lead">
+            <div className="philosophy-index" aria-hidden="true">
+              06
+            </div>
+            <p className="philosophy-kicker">The ambition</p>
+            <h2 className="philosophy-title" id="strs-ambition">
+              Coordination,
+              <br />
+              <span className="accent-word">made visible.</span>
+            </h2>
+          </div>
+          <div className="philosophy-body">
+            <p className="philosophy-copy">
+              The goal is simple: clearer coordination could mean safer journeys,
+              fewer missed trips, and less time lost to confusion between schools,
+              families and operators.
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section className="project-action" data-reveal>
+      <section className="project-action project-action--center" data-reveal>
         <p className="project-action-label">See the concept</p>
         <button type="button" className="btn btn-primary project-cta" onClick={explore}>
           <span className="btn-dot" aria-hidden="true" />
