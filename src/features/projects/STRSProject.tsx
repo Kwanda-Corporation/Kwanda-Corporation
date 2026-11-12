@@ -28,8 +28,18 @@ const AUDIENCES = [
 ];
 
 const SCREENSHOTS = [
-  { src: MEDIA.strsScreenshot1, caption: 'Student transport, organised in one place.' },
-  { src: MEDIA.strsScreenshot2, caption: 'Routes and coordination, made legible.' },
+  {
+    src: MEDIA.strsScreenshot1,
+    caption: 'Student transport, organised in one place.',
+    width: 1920,
+    height: 888,
+  },
+  {
+    src: MEDIA.strsScreenshot2,
+    caption: 'Routes and coordination, made legible.',
+    width: 1920,
+    height: 887,
+  },
 ];
 
 export function STRSProject() {
@@ -174,7 +184,14 @@ export function STRSProject() {
           <div className="media-stack media-grid">
             {SCREENSHOTS.map((shot) => (
               <figure className="media-figure" key={shot.src}>
-                <img src={shot.src} alt={shot.caption} loading="lazy" />
+                <img
+                  src={shot.src}
+                  alt={shot.caption}
+                  width={shot.width}
+                  height={shot.height}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <figcaption>{shot.caption}</figcaption>
               </figure>
             ))}
@@ -246,7 +263,13 @@ export function STRSProject() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of coordination.</p>
-        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+        <img
+          className="about-close-logo"
+          src="/brand/kwanda-logo.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </section>
     </div>
   );

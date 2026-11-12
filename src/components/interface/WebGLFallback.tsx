@@ -2,8 +2,13 @@ export function WebGLFallback() {
   return (
     <div className="webgl-fallback">
       <div className="fallback-brand">
-        <span className="brand-mark" aria-hidden="true" />
-        <span>KWANDA</span>
+        <img
+          className="fallback-brand-logo"
+          src="/brand/kwanda-logo-light.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </div>
 
       <div className="fallback-art" aria-hidden="true">

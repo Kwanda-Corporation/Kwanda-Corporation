@@ -287,7 +287,13 @@ export function AboutContent() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of expansion.</p>
-        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+        <img
+          className="about-close-logo"
+          src="/brand/kwanda-logo.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </section>
     </div>
   );

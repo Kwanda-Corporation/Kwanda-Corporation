@@ -12,6 +12,9 @@ export type Milestone = {
   why: string;
   /** Optional supporting image or screenshot URL. */
   image?: string;
+  /** Intrinsic dimensions of `image`, used to reserve layout space. */
+  imageWidth?: number;
+  imageHeight?: number;
   /** Short caption shown under an attached image. */
   imageCaption?: string;
 };
@@ -54,6 +57,8 @@ export const MILESTONES: Milestone[] = [
       'Obtained a Data Protection and Privacy registration for the company\u2019s data-controller responsibilities — formalising Kwanda\u2019s commitment to handling passenger and customer data responsibly.',
     why: 'Trust is part of the product. Registering as a data controller makes that responsibility concrete.',
     image: MEDIA.certificate,
+    imageWidth: 542,
+    imageHeight: 783,
     imageCaption: 'Kwanda Corporations\u2019 data controller certificate.',
   },
   {

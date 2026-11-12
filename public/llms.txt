@@ -1,0 +1,52 @@
+# Kwanda Corporations
+
+> Kwanda Corporations is a Rwanda-origin technology company focused on designing, developing and building digital products, software systems and technology-driven solutions that address real-world challenges. Its work spans transportation technology, education technology, digital payments and cloud infrastructure.
+
+Official website: https://kwandacorporation.com/
+Location: Kigali, Rwanda
+Tagline: Where software meets art.
+
+## Company
+
+- Legal name: Kwanda Corporations Ltd
+- Also known as: Kwanda, Kwanda Corporation, Kwanda Group
+- Registered and based in Kigali, Rwanda
+- Product-oriented technology company working across software engineering, creativity, innovation and entrepreneurship
+- The name Kwanda comes from the Kinyarwanda word for expanding, growing and increasing
+
+## Products
+
+- Katisha — a live digital travel booking platform for East Africa, connecting passengers with transportation operators through digital discovery, online booking, operator integration and digital payments. https://katisha.today
+- STRS — Student Transport and Routing System, a proposed system connecting schools, parents, transport operators and education authorities to organise, route and account for student journeys.
+
+## Team
+
+- Manzi Alpe — Chief Executive Officer and founder
+- Ashraf Tuyubahe — Chief Technology Officer
+- Ntwali Josue — Lead Software Engineer
+- Gatare Jean Marie — Operations Manager
+
+## Partners and ecosystem
+
+- MINICT — Rwanda's Ministry of ICT and Innovation
+- RURA — Rwanda Utilities Regulatory Authority
+- Trinity Express — cross-border bus and courier operator
+- Simba Coaches — East African intercity bus operator
+- pawaPay — mobile-money payment infrastructure
+- OVHcloud — cloud and server infrastructure
+- MongoDB Atlas — cloud database infrastructure
+- Google Play and App Store — mobile application distribution
+
+## Milestones
+
+- Registered as a business in Kigali, Rwanda
+- VAT registration, effective 17 August 2026
+- Data protection and privacy registration as a data controller
+- Katisha live in real-world use with passengers, bookings and transport operators
+- Working relationships with transportation operators including Trinity and Simba
+
+## Links
+
+- Website: https://kwandacorporation.com/
+- Katisha: https://katisha.today
+- GitHub: https://github.com/Kwanda-Corporation

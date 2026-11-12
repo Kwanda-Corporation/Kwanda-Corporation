@@ -76,7 +76,10 @@ export function AchievementsExperience() {
                     <img
                       src={milestone.image}
                       alt={milestone.imageCaption ?? milestone.title}
+                      width={milestone.imageWidth}
+                      height={milestone.imageHeight}
                       loading="lazy"
+                      decoding="async"
                     />
                     {milestone.imageCaption ? (
                       <figcaption>{milestone.imageCaption}</figcaption>
@@ -120,7 +123,13 @@ export function AchievementsExperience() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of progress.</p>
-        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+        <img
+          className="about-close-logo"
+          src="/brand/kwanda-logo.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </section>
     </div>
   );

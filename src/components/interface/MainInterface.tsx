@@ -55,11 +55,13 @@ export function MainInterface({
   return (
     <div className="world-ui">
       <header className="ui-brand">
-        <span className="brand-mark" aria-hidden="true" />
-        <div>
-          <p className="ui-brand-word">KWANDA</p>
-          <p className="ui-brand-sub">WHERE SOFTWARE MEETS ART</p>
-        </div>
+        <img
+          className="ui-brand-logo"
+          src="/brand/kwanda-logo-light.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </header>
 
       <div className="ui-top-right">

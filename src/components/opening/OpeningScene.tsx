@@ -163,9 +163,13 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
       <div className="opening-scrim" aria-hidden="true" />
 
       <div className="opening-brand" ref={brandRef}>
-        <span className="brand-mark" aria-hidden="true" />
-        <span className="brand-word">KWANDA</span>
-        <span className="brand-sub">GROUP</span>
+        <img
+          className="opening-brand-logo"
+          src="/brand/kwanda-logo-light.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </div>
 
       <div className="opening-controls" ref={controlsRef}>
@@ -207,6 +211,9 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
               <span className="btn-dot" aria-hidden="true" />
               Enter the world
             </button>
+            <a className="opening-text-link" href="#site-text">
+              Text version
+            </a>
           </div>
         </div>
 

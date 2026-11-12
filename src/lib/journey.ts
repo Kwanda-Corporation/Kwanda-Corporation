@@ -22,7 +22,7 @@ export const JOURNEY_STOPS: JourneyStop[] = [
     t: 0.03,
     kind: 'start',
     label: 'Start your journey',
-    kicker: 'Kwanda group',
+    kicker: 'Kwanda Corporations',
   },
   {
     key: 'about',

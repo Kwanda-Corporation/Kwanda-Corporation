@@ -134,9 +134,13 @@ export function ExperienceTransition({
             onClick={() => onNavigate('about')}
             aria-label="Open the Origin House"
           >
-            <span className="experience-brand-mark" aria-hidden="true" />
-            <span className="experience-brand-word">KWANDA</span>
-            <span className="experience-brand-sub">CORPORATIONS</span>
+            <img
+              className="experience-brand-logo"
+              src="/brand/kwanda-logo.png"
+              alt="Kwanda Corporations"
+              width={290}
+              height={209}
+            />
           </button>
 
           <nav className="experience-nav" aria-label="Destinations">

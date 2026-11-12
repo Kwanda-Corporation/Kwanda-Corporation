@@ -241,7 +241,10 @@ export function KatishaProject() {
               <img
                 src={MEDIA.katishaAgents}
                 alt="Katisha bus station agents"
+                width={896}
+                height={1200}
                 loading="lazy"
+                decoding="async"
               />
               <figcaption>
                 Working alongside bus station agents to connect the physical and
@@ -346,7 +349,13 @@ export function KatishaProject() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of the journey.</p>
-        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+        <img
+          className="about-close-logo"
+          src="/brand/kwanda-logo.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </section>
     </div>
   );

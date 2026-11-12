@@ -105,7 +105,13 @@ export function PartnersExperience() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of connection.</p>
-        <p className="about-close-sub">KWANDA CORPORATIONS</p>
+        <img
+          className="about-close-logo"
+          src="/brand/kwanda-logo.png"
+          alt="Kwanda Corporations"
+          width={290}
+          height={209}
+        />
       </section>
     </div>
   );
@@ -116,7 +122,7 @@ function PartnerCard({ partner }: { partner: Partner }) {
     <article className="partner">
       <div className="partner-logo" aria-hidden="true">
         {partner.logo ? (
-          <img src={partner.logo} alt="" loading="lazy" />
+          <img src={partner.logo} alt="" loading="lazy" decoding="async" />
         ) : (
           <span className="partner-monogram">{monogram(partner.name)}</span>
         )}

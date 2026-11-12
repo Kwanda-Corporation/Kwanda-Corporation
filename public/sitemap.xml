@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://kwandacorporation.com/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://kwandacorporation.com/og-image.png</image:loc>
+      <image:title>Kwanda Corporations — where software meets art</image:title>
+      <image:caption>Kwanda Corporations is a Rwanda-origin technology company building digital products and software systems.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://kwandacorporation.com/media/katisha-agents.jpg</image:loc>
+      <image:title>Katisha bus station agents</image:title>
+      <image:caption>Katisha works alongside bus station agents to connect physical and digital journeys.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://kwandacorporation.com/media/strs-screenshot-1.jpg</image:loc>
+      <image:title>STRS student transport platform</image:title>
+      <image:caption>STRS — Student Transport and Routing System.</image:caption>
+    </image:image>
+  </url>
+</urlset>
