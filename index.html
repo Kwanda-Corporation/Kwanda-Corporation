@@ -447,12 +447,16 @@
       .home-nav {
         position: fixed;
         top: calc(clamp(16px, 3.2vh, 34px) + 1px);
-        left: calc(clamp(18px, 3.8vw, 46px) + 272px);
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 250;
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 18px;
+        justify-content: center;
+        gap: 2px 14px;
+        width: max-content;
+        max-width: calc(100vw - 36px);
         padding: 0;
         border: 0;
         border-radius: 0;
@@ -487,19 +491,18 @@
         display: none;
       }
 
-      /* Below the brand-plus-nav line width, tuck the nav under the brand so it
-         never collides with the top-right sound / fullscreen controls. */
-      @media (max-width: 820px) {
+      /* Match the world nav: keep the centered row on the header line where it
+         fits, then drop it below the header before it reaches the brand or the
+         top-right sound / fullscreen controls. */
+      @media (max-width: 1200px) {
         .home-nav {
-          top: calc(clamp(16px, 3.2vh, 34px) + 26px);
-          left: clamp(18px, 3.8vw, 46px);
-          max-width: calc(100vw - 36px);
+          top: calc(clamp(16px, 3.2vh, 34px) + 44px);
         }
       }
 
       @media (max-width: 680px) {
         .home-nav {
-          gap: 10px;
+          gap: 2px 9px;
         }
 
         .home-nav a {
@@ -755,7 +758,7 @@
       <a href="/gerayo/">Gerayo</a>
       <a href="/team/">Team</a>
       <a href="/faq/">FAQ</a>
-      <a href="/contact/">Contact</a>
+      <a href="/contact/">Contact us</a>
     </nav>
     <div id="root"></div>
     <main id="site-text" class="seo-static" aria-labelledby="seo-title">

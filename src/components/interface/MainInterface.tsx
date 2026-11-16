@@ -76,7 +76,7 @@ export function MainInterface({
         )}
       </div>
 
-      <nav className="ui-destinations" aria-label="Destinations">
+      <nav className="ui-destinations" aria-label="World navigation">
         <span className="ui-destinations-label">Destinations</span>
         {LANDMARK_LIST.map((info) => (
           <button
@@ -88,6 +88,9 @@ export function MainInterface({
             {info.navLabel}
           </button>
         ))}
+        <a className="ui-destinations-item" href="/contact/">
+          Contact us
+        </a>
       </nav>
 
       <div className="ui-bottom-left">
