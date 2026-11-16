@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { AudioProvider } from './hooks/useAudio';
 import { OpeningScene } from './components/opening/OpeningScene';
@@ -9,6 +9,13 @@ const WorldCanvas = lazy(() => import('./components/world/WorldCanvas'));
 function Experience() {
   const [stage, setStage] = useState<'opening' | 'world'>('opening');
   const curtainRef = useRef<HTMLDivElement>(null);
+
+  /* The fixed landing nav lives outside React for crawlers. Hide it once the
+     visitor is in the world, where the world has its own destinations nav. */
+  useEffect(() => {
+    document.body.classList.toggle('is-world-stage', stage === 'world');
+    return () => document.body.classList.remove('is-world-stage');
+  }, [stage]);
 
   const handleEnterWorld = useCallback(() => {
     setStage('world');
