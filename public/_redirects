@@ -1,0 +1,13 @@
+# Netlify redirects — Kwanda Corporations
+# https://kwandacorporation.org
+
+# Canonical domain: force www to the apex domain
+https://www.kwandacorporation.org/*  https://kwandacorporation.org/:splat  301!
+
+# Canonical trailing-slash URLs (SEO)
+/about    /about/    301
+/katisha  /katisha/  301
+/strs     /strs/     301
+/team     /team/     301
+/faq      /faq/      301
+/contact  /contact/  301
