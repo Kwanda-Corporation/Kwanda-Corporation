@@ -483,8 +483,8 @@ p {
 
 .ui-brand {
   position: absolute;
-  top: clamp(18px, 3.4vh, 34px);
-  left: clamp(18px, 3.4vw, 42px);
+  top: clamp(16px, 3.2vh, 34px);
+  left: clamp(18px, 3.8vw, 46px);
   display: flex;
   align-items: flex-start;
 }
