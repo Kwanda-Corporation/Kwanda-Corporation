@@ -6,11 +6,11 @@
     <title>Contact Kwanda Corporations | Kigali, Rwanda</title>
     <meta
       name="description"
-      content="Contact Kwanda Corporations in Kigali, Rwanda. Reach Katisha support at support@katisha.today or +250 793 216 191, book bus tickets at katisha.today, or connect with the team on GitHub."
+      content="Contact Kwanda Corporations in Kigali, Rwanda. Send the team a message at manzialpe@gmail.com, reach Katisha support at support@katisha.today or +250 793 216 191, or connect with the team on GitHub."
     />
     <meta
       name="keywords"
-      content="contact Kwanda Corporations, Kwanda Corporation Rwanda contact, Katisha support, Katisha contact, support@katisha.today, software company Kigali contact, STRS enquiry"
+      content="contact Kwanda Corporations, Kwanda Corporation Rwanda contact, contact form, manzialpe@gmail.com, Katisha support, Katisha contact, support@katisha.today, software company Kigali contact, Gerayo enquiry"
     />
     <meta name="author" content="Kwanda Corporations" />
     <meta name="publisher" content="Kwanda Corporations" />
@@ -94,6 +94,14 @@
                 "url": "https://katisha.today",
                 "availableLanguage": ["en", "rw", "fr"],
                 "areaServed": ["RW", "UG", "KE", "TZ"]
+              },
+              {
+                "@type": "ContactPoint",
+                "contactType": "sales",
+                "name": "Kwanda Corporations",
+                "email": "manzialpe@gmail.com",
+                "availableLanguage": ["en", "rw", "fr"],
+                "areaServed": ["RW", "UG", "KE", "TZ"]
               }
             ]
           }
@@ -117,7 +125,7 @@
         <nav class="site-nav" aria-label="Primary">
           <a href="/about/">About</a>
           <a href="/katisha/">Katisha</a>
-          <a href="/strs/">STRS</a>
+          <a href="/gerayo/">Gerayo</a>
           <a href="/team/">Team</a>
           <a href="/faq/">FAQ</a>
           <a href="/contact/" aria-current="page">Contact</a>
@@ -140,9 +148,115 @@
 
         <hr />
 
+        <section aria-labelledby="contact-form-title">
+          <h2 id="contact-form-title">Send us a message</h2>
+          <p>
+            Tell us what you have in mind — a product question, a partnership, a school pilot
+            or media enquiry. Messages go straight to the team at
+            <a href="mailto:manzialpe@gmail.com">manzialpe@gmail.com</a>.
+          </p>
+
+          <form
+            class="contact-form"
+            id="contact-form"
+            name="contact"
+            action="/.netlify/functions/contact"
+            method="POST"
+          >
+            <div class="form-grid">
+              <div class="field">
+                <label for="contact-name">Your name <span aria-hidden="true">*</span></label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  maxlength="120"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="contact-email">Email address <span aria-hidden="true">*</span></label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  maxlength="200"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="contact-phone">Phone <span class="optional">(optional)</span></label>
+                <input
+                  id="contact-phone"
+                  name="phone"
+                  type="tel"
+                  autocomplete="tel"
+                  maxlength="60"
+                />
+              </div>
+              <div class="field">
+                <label for="contact-topic">What is this about?</label>
+                <select id="contact-topic" name="topic">
+                  <option>General enquiry</option>
+                  <option>Katisha support</option>
+                  <option>Gerayo</option>
+                  <option>Partnership</option>
+                  <option>Media &amp; press</option>
+                  <option>Careers</option>
+                </select>
+              </div>
+              <div class="field field--full">
+                <label for="contact-message">Message <span aria-hidden="true">*</span></label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows="7"
+                  minlength="10"
+                  maxlength="5000"
+                  required
+                ></textarea>
+              </div>
+            </div>
+
+            <p class="honeypot" aria-hidden="true">
+              <label for="contact-company-website">Company website</label>
+              <input
+                id="contact-company-website"
+                name="company-website"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </p>
+
+            <div class="form-actions">
+              <button class="button" id="contact-submit" type="submit">Send message</button>
+              <p class="form-note">
+                Prefer email? Write to
+                <a href="mailto:manzialpe@gmail.com">manzialpe@gmail.com</a>. We usually reply
+                within two business days.
+              </p>
+            </div>
+
+            <p
+              class="form-status"
+              id="contact-status"
+              role="status"
+              aria-live="polite"
+              hidden
+            ></p>
+          </form>
+        </section>
+
         <section aria-labelledby="contact-details">
           <h2 id="contact-details">Get in touch</h2>
           <ul class="fact-list">
+            <li>
+              <span class="label">General email</span>
+              <span><a href="mailto:manzialpe@gmail.com">manzialpe@gmail.com</a></span>
+            </li>
             <li>
               <span class="label">Location</span>
               <span>Kigali, Rwanda</span>
@@ -187,11 +301,11 @@
               </p>
             </article>
             <article class="card">
-              <span class="meta">STRS</span>
+              <span class="meta">Gerayo</span>
               <h3>Schools &amp; pilots</h3>
               <p>
                 Interested in student transport coordination? Read about
-                <a href="/strs/">STRS</a> and start a conversation.
+                <a href="/gerayo/">Gerayo</a> and start a conversation.
               </p>
             </article>
             <article class="card">
@@ -216,7 +330,7 @@
           <p>
             Kwanda Corporations Ltd is a software and technology company registered in
             Kigali, Rwanda. It is the company behind <a href="/katisha/">Katisha</a> and
-            <a href="/strs/">STRS</a>. It is not affiliated with Kwanda Group, Kwanda Ltd
+            <a href="/gerayo/">Gerayo</a>. It is not affiliated with Kwanda Group, Kwanda Ltd
             (UK), Kwanda Technology PTY, Vision Kwanda Group, Kwanda Industrial or any other
             similarly named organisation.
           </p>
@@ -231,7 +345,7 @@
           <a href="/">Home</a>
           <a href="/about/">About</a>
           <a href="/katisha/">Katisha</a>
-          <a href="/strs/">STRS</a>
+          <a href="/gerayo/">Gerayo</a>
           <a href="/team/">Team</a>
           <a href="/faq/">FAQ</a>
           <a href="/contact/">Contact</a>
@@ -239,5 +353,76 @@
         </nav>
       </div>
     </footer>
+
+    <script>
+      (() => {
+        const form = document.getElementById('contact-form');
+        if (!form) return;
+
+        const status = document.getElementById('contact-status');
+        const submit = document.getElementById('contact-submit');
+        const submitLabel = submit.textContent;
+
+        const setStatus = (state, message) => {
+          status.hidden = false;
+          status.dataset.state = state;
+          status.textContent = message;
+        };
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          if (!form.reportValidity()) {
+            setStatus('error', 'Please complete the required fields before sending.');
+            return;
+          }
+
+          const data = Object.fromEntries(new FormData(form).entries());
+          submit.disabled = true;
+          submit.textContent = 'Sending…';
+          status.hidden = true;
+
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            let result = {};
+            try {
+              result = await response.json();
+            } catch {
+              result = {};
+            }
+
+            if (response.ok && result.ok) {
+              form.reset();
+              setStatus(
+                'success',
+                "Thank you — your message is on its way. We'll reply by email soon.",
+              );
+            } else {
+              setStatus(
+                'error',
+                result.error ||
+                  'Something went wrong. Please email manzialpe@gmail.com directly.',
+              );
+            }
+          } catch {
+            setStatus(
+              'error',
+              'We could not reach the server. Please email manzialpe@gmail.com directly.',
+            );
+          } finally {
+            submit.disabled = false;
+            submit.textContent = submitLabel;
+          }
+        });
+      })();
+    </script>
   </body>
 </html>

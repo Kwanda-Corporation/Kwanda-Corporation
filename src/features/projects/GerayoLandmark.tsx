@@ -7,7 +7,7 @@ import {
 import { ProjectLandmark } from './ProjectLandmark';
 
 /**
- * STRS — a traditional learning compound.
+ * Gerayo — a traditional learning compound.
  *
  * Class rondavels frame a central courtyard whose earth carries a drawn routing
  * network: a hub, a set of stops, and the journeys between them. The route
@@ -71,7 +71,7 @@ const DETAILS: DetailSegment[] = [
   ...ROUTE_LINES,
 ];
 
-export function STRSLandmark({
+export function GerayoLandmark({
   onSelect,
   reduced,
 }: {
@@ -80,7 +80,7 @@ export function STRSLandmark({
 }) {
   return (
     <ProjectLandmark
-      id="strs"
+      id="gerayo"
       onSelect={onSelect}
       reduced={reduced}
       rotation={4.1}

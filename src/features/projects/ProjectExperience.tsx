@@ -1,6 +1,6 @@
 import { KatishaProject } from './KatishaProject';
-import { STRSProject } from './STRSProject';
+import { GerayoProject } from './GerayoProject';
 
-export function ProjectExperience({ project }: { project: 'katisha' | 'strs' }) {
-  return project === 'katisha' ? <KatishaProject /> : <STRSProject />;
+export function ProjectExperience({ project }: { project: 'katisha' | 'gerayo' }) {
+  return project === 'katisha' ? <KatishaProject /> : <GerayoProject />;
 }

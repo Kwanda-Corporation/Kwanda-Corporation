@@ -3,7 +3,7 @@ import type * as THREE from 'three';
 export type LandmarkId =
   | 'about'
   | 'katisha'
-  | 'strs'
+  | 'gerayo'
   | 'achievements'
   | 'partners'
   | 'team';
@@ -53,10 +53,10 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
     nearRadius: 48,
     view: { distance: 58, azimuth: -0.3, elevation: 0.3 },
   },
-  strs: {
-    id: 'strs',
-    name: 'STRS',
-    navLabel: 'STRS',
+  gerayo: {
+    id: 'gerayo',
+    name: 'Gerayo',
+    navLabel: 'Gerayo',
     kicker: 'Student transport & routing',
     // South-eastern plains, the third distinct quarter of the landscape.
     position: { x: 120, z: 100 },
@@ -102,7 +102,7 @@ export const LANDMARKS: Record<LandmarkId, LandmarkInfo> = {
 export const LANDMARK_LIST: LandmarkInfo[] = [
   LANDMARKS.about,
   LANDMARKS.katisha,
-  LANDMARKS.strs,
+  LANDMARKS.gerayo,
   LANDMARKS.achievements,
   LANDMARKS.partners,
   LANDMARKS.team,

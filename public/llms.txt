@@ -18,7 +18,7 @@ Tagline: Where software meets art.
 ## Products
 
 - Katisha — a live digital travel booking platform for East Africa, connecting passengers with transportation operators through digital discovery, online booking, operator integration and digital payments. https://katisha.today
-- STRS — Student Transport and Routing System, a proposed system connecting schools, parents, transport operators and education authorities to organise, route and account for student journeys.
+- Gerayo — a proposed student transport and routing system connecting schools, parents, transport operators and education authorities to organise, route and account for student journeys.
 
 ## Team
 
@@ -51,7 +51,7 @@ Tagline: Where software meets art.
 - Website: https://kwandacorporation.org/
 - About: https://kwandacorporation.org/about/
 - Katisha: https://kwandacorporation.org/katisha/ (and https://katisha.today)
-- STRS: https://kwandacorporation.org/strs/
+- Gerayo: https://kwandacorporation.org/gerayo/
 - Team: https://kwandacorporation.org/team/
 - FAQ: https://kwandacorporation.org/faq/
 - Contact: https://kwandacorporation.org/contact/

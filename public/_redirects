@@ -7,7 +7,12 @@ https://www.kwandacorporation.org/*  https://kwandacorporation.org/:splat  301!
 # Canonical trailing-slash URLs (SEO)
 /about    /about/    301
 /katisha  /katisha/  301
-/strs     /strs/     301
+/gerayo   /gerayo/   301
 /team     /team/     301
 /faq      /faq/      301
 /contact  /contact/  301
+
+# STRS was renamed to Gerayo — keep old links working
+/strs      /gerayo/  301
+/strs/     /gerayo/  301
+/strs/*    /gerayo/  301

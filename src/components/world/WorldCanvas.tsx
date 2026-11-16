@@ -79,7 +79,7 @@ function DestinationContent({ id }: { id: LandmarkId }) {
     case 'about':
       return <AboutExperience />;
     case 'katisha':
-    case 'strs':
+    case 'gerayo':
       return <ProjectExperience project={id} />;
     case 'achievements':
       return <AchievementsExperience />;

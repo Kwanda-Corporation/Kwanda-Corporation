@@ -1,7 +1,7 @@
 import type { LandmarkId } from '../../lib/landmarks';
 
 export type ProjectMeta = {
-  id: Extract<LandmarkId, 'katisha' | 'strs'>;
+  id: Extract<LandmarkId, 'katisha' | 'gerayo'>;
   index: string;
   name: string;
   fullName?: string;
@@ -10,7 +10,7 @@ export type ProjectMeta = {
   status?: string;
 };
 
-export const PROJECTS: Record<Extract<LandmarkId, 'katisha' | 'strs'>, ProjectMeta> = {
+export const PROJECTS: Record<Extract<LandmarkId, 'katisha' | 'gerayo'>, ProjectMeta> = {
   katisha: {
     id: 'katisha',
     index: '01',
@@ -19,11 +19,11 @@ export const PROJECTS: Record<Extract<LandmarkId, 'katisha' | 'strs'>, ProjectMe
     tagline: 'Connecting journeys through technology.',
     status: 'Live product',
   },
-  strs: {
-    id: 'strs',
+  gerayo: {
+    id: 'gerayo',
     index: '02',
-    name: 'STRS',
-    fullName: 'Student Transport and Routing System',
+    name: 'Gerayo',
+    fullName: 'Student transport and routing system',
     category: 'Education & Transportation Technology',
     tagline: 'A connected approach to student transportation.',
     status: 'Concept / Proposed system',

@@ -6,8 +6,8 @@
 export const MEDIA = {
   katishaVideo: '/media/katisha-video.mp4',
   katishaAgents: '/media/katisha-agents.jpg',
-  strsScreenshot1: '/media/strs-screenshot-1.jpg',
-  strsScreenshot2: '/media/strs-screenshot-2.jpg',
+  gerayoScreenshot1: '/media/gerayo-screenshot-1.jpg',
+  gerayoScreenshot2: '/media/gerayo-screenshot-2.jpg',
   certificate: '/media/data-controller-certificate.jpg',
   logos: {
     minict: '/media/logos/minict.png',

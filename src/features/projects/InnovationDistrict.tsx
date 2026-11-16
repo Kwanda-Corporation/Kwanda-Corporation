@@ -1,14 +1,14 @@
 import { RouteLine, RouteNode } from '../world/RouteLine';
 import { KatishaLandmark } from './KatishaLandmark';
-import { STRSLandmark } from './STRSLandmark';
+import { GerayoLandmark } from './GerayoLandmark';
 
 type InnovationDistrictProps = {
-  onSelect: (id: 'katisha' | 'strs') => void;
+  onSelect: (id: 'katisha' | 'gerayo') => void;
   reduced: boolean;
 };
 
 const KATISHA_APPROACH = { x: 26, z: -136 };
-const STRS_ENTRY = { x: 107, z: 91 };
+const GERAYO_ENTRY = { x: 107, z: 91 };
 
 export function InnovationDistrict({ onSelect, reduced }: InnovationDistrictProps) {
   return (
@@ -20,7 +20,7 @@ export function InnovationDistrict({ onSelect, reduced }: InnovationDistrictProp
           { x: 55, z: -70 },
           { x: 80, z: -22 },
           { x: 100, z: 30 },
-          STRS_ENTRY,
+          GERAYO_ENTRY,
         ]}
         color="#e87532"
         opacity={0.5}
@@ -33,7 +33,7 @@ export function InnovationDistrict({ onSelect, reduced }: InnovationDistrictProp
       <RouteNode x={100} z={30} />
 
       <KatishaLandmark onSelect={() => onSelect('katisha')} reduced={reduced} />
-      <STRSLandmark onSelect={() => onSelect('strs')} reduced={reduced} />
+      <GerayoLandmark onSelect={() => onSelect('gerayo')} reduced={reduced} />
     </group>
   );
 }

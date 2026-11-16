@@ -78,11 +78,11 @@ export const MILESTONES: Milestone[] = [
     why: 'The moment a product stops being a demo and starts serving people.',
   },
   {
-    id: 'strs-initiated',
+    id: 'gerayo-initiated',
     category: 'product',
-    title: 'STRS initiated',
+    title: 'Gerayo initiated',
     description:
-      'Began development direction on STRS — the Student Transport and Routing System — extending Kwanda\u2019s work from commercial travel into education-related digital infrastructure.',
+      'Began development direction on Gerayo — a student transport and routing system — extending Kwanda\u2019s work from commercial travel into education-related digital infrastructure.',
     why: 'Proof that the company\u2019s approach travels beyond a single industry.',
   },
   {

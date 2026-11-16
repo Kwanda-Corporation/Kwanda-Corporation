@@ -30,20 +30,20 @@ const AUDIENCES = [
 
 const SCREENSHOTS = [
   {
-    src: MEDIA.strsScreenshot1,
+    src: MEDIA.gerayoScreenshot1,
     caption: 'Student transport, organised in one place.',
     width: 1920,
     height: 888,
   },
   {
-    src: MEDIA.strsScreenshot2,
+    src: MEDIA.gerayoScreenshot2,
     caption: 'Routes and coordination, made legible.',
     width: 1920,
     height: 887,
   },
 ];
 
-export function STRSProject() {
+export function GerayoProject() {
   const rootRef = useRef<HTMLDivElement>(null);
   const systemRef = useRef<HTMLElement>(null);
   const [focused, setFocused] = useState(false);
@@ -57,7 +57,7 @@ export function STRSProject() {
 
   return (
     <div className="project" ref={rootRef}>
-      <section className="experience-hero" aria-labelledby="strs-title">
+      <section className="experience-hero" aria-labelledby="gerayo-title">
         <div className="art-layer art-layer--br" aria-hidden="true">
           <NetworkDiagram />
         </div>
@@ -68,13 +68,13 @@ export function STRSProject() {
           <span className="project-status-dot" aria-hidden="true" />
           Concept / Proposed system
         </p>
-        <h1 className="experience-title" id="strs-title" data-reveal>
+        <h1 className="experience-title" id="gerayo-title" data-reveal>
           Every student,
           <br />
           <em>accounted for.</em>
         </h1>
         <p className="experience-lede" data-reveal>
-          STRS — the Student Transport and Routing System — is a proposed system
+          Gerayo — a student transport and routing system — is a proposed system
           designed to connect the people and organisations responsible for
           getting students to school.
         </p>
@@ -129,7 +129,7 @@ export function STRSProject() {
         className={`project-section section--right project-system${focused ? ' is-focused' : ''}`}
         ref={systemRef}
         data-reveal
-        aria-labelledby="strs-system-title"
+        aria-labelledby="gerayo-system-title"
       >
         <div className="art-layer art-layer--lc" aria-hidden="true">
           <ProcessArc />
@@ -138,12 +138,12 @@ export function STRSProject() {
           03
         </div>
         <div className="section-body">
-          <h2 className="section-title" id="strs-system-title">
+          <h2 className="section-title" id="gerayo-system-title">
             The proposed system
           </h2>
           <div className="section-copy">
             <p>
-              STRS is intended to bring together schools, parents, transport
+              Gerayo is intended to bring together schools, parents, transport
               operators and relevant education stakeholders onto a shared,
               digitally connected picture of student transportation.
             </p>
@@ -211,7 +211,7 @@ export function STRSProject() {
           <h2 className="section-title">Long-term vision</h2>
           <div className="section-copy">
             <p>
-              STRS represents Kwanda&apos;s interest in technology that extends
+              Gerayo represents Kwanda&apos;s interest in technology that extends
               beyond commercial applications into public and social
               infrastructure — supporting more organised student transportation
               and contributing to the broader digital transformation of
@@ -221,7 +221,7 @@ export function STRSProject() {
         </div>
       </section>
 
-      <section className="about-philosophy" data-reveal aria-labelledby="strs-ambition">
+      <section className="about-philosophy" data-reveal aria-labelledby="gerayo-ambition">
         <div className="art-layer art-layer--full" aria-hidden="true">
           <RidgeArt variant="peaks" />
         </div>
@@ -231,7 +231,7 @@ export function STRSProject() {
               06
             </div>
             <p className="philosophy-kicker">The ambition</p>
-            <h2 className="philosophy-title" id="strs-ambition">
+            <h2 className="philosophy-title" id="gerayo-ambition">
               Coordination,
               <br />
               <span className="accent-word">made visible.</span>
@@ -255,7 +255,7 @@ export function STRSProject() {
           <span aria-hidden="true">↓</span>
         </button>
         <p className="project-note">
-          STRS is presented here as a concept. No public launch, partnership,
+          Gerayo is presented here as a concept. No public launch, partnership,
           approval or operational adoption is claimed — proposed capabilities
           are described as intentions, not finished features.
         </p>

@@ -12,7 +12,7 @@
     />
     <meta
       name="keywords"
-      content="Kwanda Corporations, Kwanda Corporation, Kwanda Corporations Ltd, Kwanda Corporation Rwanda, Kwanda Rwanda, Rwanda technology company, Kigali software company, software development Rwanda, digital products Africa, Katisha, Katisha bus booking, book bus tickets Rwanda, STRS, Student Transport and Routing System, East Africa travel technology"
+      content="Kwanda Corporations, Kwanda Corporation, Kwanda Corporations Ltd, Kwanda Corporation Rwanda, Kwanda Rwanda, Rwanda technology company, Kigali software company, software development Rwanda, digital products Africa, Katisha, Katisha bus booking, book bus tickets Rwanda, Gerayo, student transport and routing system, East Africa travel technology"
     />
     <meta name="author" content="Kwanda Corporations" />
     <meta name="publisher" content="Kwanda Corporations" />
@@ -83,7 +83,7 @@
             "name": "Kwanda Corporations",
             "legalName": "Kwanda Corporations Ltd",
             "alternateName": ["Kwanda", "Kwanda Corporation", "Kwanda Corporations Ltd"],
-            "disambiguatingDescription": "Kwanda Corporations Ltd is a software and technology company registered in Kigali, Rwanda. It is the company behind the Katisha bus booking platform and the STRS student transport system, and is not affiliated with other organisations that use Kwanda in their names, including Kwanda Group.",
+            "disambiguatingDescription": "Kwanda Corporations Ltd is a software and technology company registered in Kigali, Rwanda. It is the company behind the Katisha bus booking platform and the Gerayo student transport system, and is not affiliated with other organisations that use Kwanda in their names, including Kwanda Group.",
             "url": "https://kwandacorporation.org/",
             "logo": {
               "@type": "ImageObject",
@@ -132,7 +132,7 @@
             ],
             "owns": [
               { "@id": "https://kwandacorporation.org/#katisha-brand" },
-              { "@id": "https://kwandacorporation.org/#strs-brand" }
+              { "@id": "https://kwandacorporation.org/#gerayo-brand" }
             ],
             "founder": { "@id": "https://kwandacorporation.org/#manzi-alpe" },
             "employee": [
@@ -192,10 +192,10 @@
           },
           {
             "@type": "Brand",
-            "@id": "https://kwandacorporation.org/#strs-brand",
-            "name": "STRS",
-            "alternateName": "Student Transport and Routing System",
-            "description": "STRS is a proposed student transport and routing system for schools, parents, operators and education authorities.",
+            "@id": "https://kwandacorporation.org/#gerayo-brand",
+            "name": "Gerayo",
+            "alternateName": "Gerayo Student Transport",
+            "description": "Gerayo is a proposed student transport and routing system for schools, parents, operators and education authorities.",
             "parentOrganization": { "@id": "https://kwandacorporation.org/#organization" }
           },
           {
@@ -226,13 +226,13 @@
           },
           {
             "@type": ["SoftwareApplication", "Product"],
-            "@id": "https://kwandacorporation.org/#strs",
-            "name": "STRS",
-            "alternateName": "Student Transport and Routing System",
+            "@id": "https://kwandacorporation.org/#gerayo",
+            "name": "Gerayo",
+            "alternateName": "Gerayo Student Transport",
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "Web",
-            "description": "STRS — the Student Transport and Routing System — is a proposed system designed to connect the schools, parents, transport operators and education authorities responsible for getting students to school.",
-            "brand": { "@id": "https://kwandacorporation.org/#strs-brand" },
+            "description": "Gerayo — a student transport and routing system — is a proposed system designed to connect the schools, parents, transport operators and education authorities responsible for getting students to school.",
+            "brand": { "@id": "https://kwandacorporation.org/#gerayo-brand" },
             "publisher": { "@id": "https://kwandacorporation.org/#organization" },
             "manufacturer": { "@id": "https://kwandacorporation.org/#organization" },
             "inLanguage": "en"
@@ -251,8 +251,8 @@
               {
                 "@type": "ListItem",
                 "position": 2,
-                "name": "STRS — Student Transport and Routing System",
-                "item": { "@id": "https://kwandacorporation.org/#strs" }
+                "name": "Gerayo — student transport and routing system",
+                "item": { "@id": "https://kwandacorporation.org/#gerayo" }
               }
             ]
           },
@@ -329,7 +329,7 @@
                 "name": "What products does Kwanda Corporations build?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Kwanda Corporations builds Katisha, a live digital travel booking platform for East Africa, and STRS, the Student Transport and Routing System — a proposed system for coordinating student transport between schools, parents, operators and education authorities."
+                  "text": "Kwanda Corporations builds Katisha, a live digital travel booking platform for East Africa, and Gerayo, our student transport and routing system — a proposed system for coordinating student transport between schools, parents, operators and education authorities."
                 }
               },
               {
@@ -342,10 +342,10 @@
               },
               {
                 "@type": "Question",
-                "name": "What is STRS?",
+                "name": "What is Gerayo?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "STRS stands for Student Transport and Routing System. It is a proposed system designed to give schools, parents, transport operators and education authorities a connected way to organise, route and account for student journeys."
+                  "text": "Gerayo is a proposed student transport and routing system designed to give schools, parents, transport operators and education authorities a connected way to organise, route and account for student journeys."
                 }
               },
               {
@@ -437,6 +437,46 @@
         transform: translateY(0);
         outline: 2px solid #e87532;
         outline-offset: 2px;
+      }
+
+      /* Always-visible navigation to the crawlable content pages. Sits above
+         the interactive experience (opening z-50, world z-10) but below the
+         full-screen editorial panels (z-300) so it stays out of their way. */
+      .home-nav {
+        position: fixed;
+        top: clamp(12px, 2.8vh, 26px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 250;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2px 16px;
+        max-width: calc(100vw - 24px);
+        padding: 9px 18px;
+        border: 1px solid rgba(245, 245, 240, 0.14);
+        border-radius: 999px;
+        background: rgba(8, 8, 8, 0.6);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      .home-nav a {
+        color: rgba(245, 245, 240, 0.66);
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 9.5px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+        white-space: nowrap;
+        padding: 2px 2px;
+        transition: color 0.25s ease;
+      }
+
+      .home-nav a:hover,
+      .home-nav a:focus-visible {
+        color: #e87532;
       }
 
       .seo-static .seo-back {
@@ -681,6 +721,14 @@
   </head>
   <body>
     <a class="skip-link" href="#site-text">Skip to the text version</a>
+    <nav class="home-nav" aria-label="Primary">
+      <a href="/about/">About</a>
+      <a href="/katisha/">Katisha</a>
+      <a href="/gerayo/">Gerayo</a>
+      <a href="/team/">Team</a>
+      <a href="/faq/">FAQ</a>
+      <a href="/contact/">Contact</a>
+    </nav>
     <div id="root"></div>
     <main id="site-text" class="seo-static" aria-labelledby="seo-title">
       <div class="seo-wrap">
@@ -716,7 +764,7 @@
         <p class="seo-meta-links">
           <a href="/about/">About</a>
           <a href="/katisha/">Katisha</a>
-          <a href="/strs/">STRS</a>
+          <a href="/gerayo/">Gerayo</a>
           <a href="/team/">Team</a>
           <a href="/faq/">FAQ</a>
           <a href="/contact/">Contact</a>
@@ -765,9 +813,9 @@
               </p>
             </article>
             <article class="seo-card">
-              <h3>STRS — Student Transport and Routing System</h3>
+              <h3>Gerayo — student transport and routing system</h3>
               <p>
-                <strong>STRS</strong> is a proposed system designed to connect the
+                <strong>Gerayo</strong> is a proposed system designed to connect the
                 people and organisations responsible for getting students to school:
                 schools, parents, transport operators and education authorities. It
                 aims to make student transport organised, visible and accounted for,
@@ -776,7 +824,7 @@
               </p>
               <p>
                 Read more on the
-                <a href="/strs/">STRS page</a>.
+                <a href="/gerayo/">Gerayo page</a>.
               </p>
             </article>
           </div>
@@ -822,7 +870,7 @@
             mix them together. This website refers only to
             <strong>Kwanda Corporations Ltd</strong>, registered in Kigali, Rwanda —
             the company behind <a href="/katisha/">Katisha</a> and
-            <a href="/strs/">STRS</a>.
+            <a href="/gerayo/">Gerayo</a>.
           </p>
           <p>
             <strong>Kwanda Corporations is not Kwanda Group.</strong> Kwanda Group is
@@ -940,7 +988,7 @@
           <h3>What products does Kwanda Corporations build?</h3>
           <p>
             Kwanda Corporations builds Katisha, a live digital travel booking platform
-            for East Africa, and STRS, the Student Transport and Routing System — a
+            for East Africa, and Gerayo, our student transport and routing system — a
             proposed system for coordinating student transport between schools,
             parents, operators and education authorities.
           </p>
@@ -954,12 +1002,11 @@
             <a href="https://katisha.today" rel="noopener">katisha.today</a>.
           </p>
 
-          <h3>What is STRS?</h3>
+          <h3>What is Gerayo?</h3>
           <p>
-            STRS stands for Student Transport and Routing System. It is a proposed
-            system designed to give schools, parents, transport operators and
-            education authorities a connected way to organise, route and account for
-            student journeys.
+            Gerayo is a proposed student transport and routing system designed to give
+            schools, parents, transport operators and education authorities a connected
+            way to organise, route and account for student journeys.
           </p>
 
           <h3>Who leads Kwanda Corporations?</h3>

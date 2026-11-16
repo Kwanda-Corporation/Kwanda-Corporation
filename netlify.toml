@@ -8,6 +8,11 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Serverless functions (contact form email delivery)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Hashed build assets (Vite adds content hashes to these filenames)
 [[headers]]
   for = "/assets/*"

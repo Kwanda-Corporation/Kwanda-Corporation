@@ -14,7 +14,7 @@ export type JourneyStop = {
 /**
  * The guided road trip. Stops are ordered along `pathPoint` (the road) so the
  * camera can travel forward and meet one sign at a time: the welcome sign,
- * then About Us, Katisha and STRS.
+ * then About Us, Katisha and Gerayo.
  */
 export const JOURNEY_STOPS: JourneyStop[] = [
   {
@@ -41,12 +41,12 @@ export const JOURNEY_STOPS: JourneyStop[] = [
     destination: 'katisha',
   },
   {
-    key: 'strs',
+    key: 'gerayo',
     t: 0.72,
     kind: 'destination',
-    label: 'STRS',
+    label: 'Gerayo',
     kicker: 'Student transport & routing',
-    destination: 'strs',
+    destination: 'gerayo',
   },
   {
     key: 'achievements',
