@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import { BrandWordmark } from '../../components/brand/BrandWordmark';
 import {
   CompassRose,
   GrowthRings,
@@ -287,13 +288,7 @@ export function AboutContent() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of expansion.</p>
-        <img
-          className="about-close-logo"
-          src="/brand/kwanda-logo.png"
-          alt="Kwanda Corporations"
-          width={290}
-          height={209}
-        />
+        <BrandWordmark className="about-close-logo" tone="ink" />
       </section>
     </div>
   );

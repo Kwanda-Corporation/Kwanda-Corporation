@@ -2,17 +2,18 @@
 
 > Kwanda Corporations is a Rwanda-origin technology company focused on designing, developing and building digital products, software systems and technology-driven solutions that address real-world challenges. Its work spans transportation technology, education technology, digital payments and cloud infrastructure.
 
-Official website: https://kwandacorporation.com/
+Official website: https://kwandacorporation.org/
 Location: Kigali, Rwanda
 Tagline: Where software meets art.
 
 ## Company
 
 - Legal name: Kwanda Corporations Ltd
-- Also known as: Kwanda, Kwanda Corporation, Kwanda Group
+- Also known as: Kwanda, Kwanda Corporation, Kwanda Corporations Ltd
 - Registered and based in Kigali, Rwanda
 - Product-oriented technology company working across software engineering, creativity, innovation and entrepreneurship
 - The name Kwanda comes from the Kinyarwanda word for expanding, growing and increasing
+- Not affiliated with other organisations that use Kwanda in their names, including Kwanda Group, Kwanda Ltd (UK), Kwanda Technology PTY, Vision Kwanda Group and Kwanda Industrial
 
 ## Products
 
@@ -47,6 +48,11 @@ Tagline: Where software meets art.
 
 ## Links
 
-- Website: https://kwandacorporation.com/
-- Katisha: https://katisha.today
+- Website: https://kwandacorporation.org/
+- About: https://kwandacorporation.org/about/
+- Katisha: https://kwandacorporation.org/katisha/ (and https://katisha.today)
+- STRS: https://kwandacorporation.org/strs/
+- Team: https://kwandacorporation.org/team/
+- FAQ: https://kwandacorporation.org/faq/
+- Contact: https://kwandacorporation.org/contact/
 - GitHub: https://github.com/Kwanda-Corporation

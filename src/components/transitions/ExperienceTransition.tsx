@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 import { LANDMARKS, LANDMARK_LIST, type LandmarkId } from '../../lib/landmarks';
+import { BrandWordmark } from '../brand/BrandWordmark';
 import { SplitReveal } from './SplitReveal';
 
 type ExperienceTransitionProps = {
@@ -134,13 +135,7 @@ export function ExperienceTransition({
             onClick={() => onNavigate('about')}
             aria-label="Open the Origin House"
           >
-            <img
-              className="experience-brand-logo"
-              src="/brand/kwanda-logo.png"
-              alt="Kwanda Corporations"
-              width={290}
-              height={209}
-            />
+            <BrandWordmark className="experience-brand-logo" tone="ink" />
           </button>
 
           <nav className="experience-nav" aria-label="Destinations">

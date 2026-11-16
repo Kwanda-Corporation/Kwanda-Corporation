@@ -126,6 +126,13 @@ class LandmarkRegistry {
 
   near = new Set<LandmarkId>();
 
+  /**
+   * The landscape starts quiet: destination markers stay hidden until the
+   * traveller actually explores by hand. Starting the guided journey keeps
+   * them hidden too, so the road signs are the only cue at the beginning.
+   */
+  discovered = false;
+
   private listeners = new Set<() => void>();
 
   private version = 0;
@@ -143,6 +150,17 @@ class LandmarkRegistry {
 
   isActive(id: LandmarkId): boolean {
     return this.hovered === id || this.near.has(id);
+  }
+
+  isDiscovered(): boolean {
+    return this.discovered;
+  }
+
+  /** Reveal the destination markers after the first manual exploration. */
+  reveal(): void {
+    if (this.discovered) return;
+    this.discovered = true;
+    this.commit();
   }
 
   register(pick: LandmarkPick): () => void {

@@ -76,11 +76,11 @@ class AudioEngine {
 
         // Punch the intro drums hard and keep the low end from clipping.
         this.percComp = ctx.createDynamicsCompressor();
-        this.percComp.threshold.value = -20;
-        this.percComp.knee.value = 14;
-        this.percComp.ratio.value = 8;
-        this.percComp.attack.value = 0.004;
-        this.percComp.release.value = 0.22;
+        this.percComp.threshold.value = -8;
+        this.percComp.knee.value = 10;
+        this.percComp.ratio.value = 4;
+        this.percComp.attack.value = 0.003;
+        this.percComp.release.value = 0.18;
 
         this.percBus.connect(this.percComp);
         this.percComp.connect(this.musicBus);
@@ -163,7 +163,7 @@ class AudioEngine {
     const bus = this.percBus;
     bus.gain.cancelScheduledValues(now);
     bus.gain.setValueAtTime(Math.max(0.0001, bus.gain.value), now);
-    bus.gain.linearRampToValueAtTime(1, now + 0.7);
+    bus.gain.linearRampToValueAtTime(1, now + 0.12);
 
     this.startDrone();
 
@@ -208,8 +208,8 @@ class AudioEngine {
     if (!bus) return;
 
     if (PATTERN.dunun.includes(step)) this.dunun(time, bus);
-    if (PATTERN.low.includes(step)) this.membrane(time, 122, 52, 0.56, 0.42, bus);
-    if (PATTERN.tone.includes(step)) this.membrane(time, 292, 214, 0.32, 0.22, bus);
+    if (PATTERN.low.includes(step)) this.membrane(time, 122, 52, 0.68, 0.42, bus);
+    if (PATTERN.tone.includes(step)) this.membrane(time, 292, 214, 0.36, 0.22, bus);
     if (PATTERN.slap.includes(step)) this.slap(time, bus);
     if (PATTERN.bell.includes(step)) this.bell(time, bus);
     if (PATTERN.shaker.includes(step)) {
@@ -267,7 +267,7 @@ class AudioEngine {
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, time);
-    gain.gain.exponentialRampToValueAtTime(0.92, time + 0.012);
+    gain.gain.exponentialRampToValueAtTime(1, time + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.72);
 
     osc.connect(gain);

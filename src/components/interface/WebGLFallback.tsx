@@ -1,14 +1,10 @@
+import { BrandWordmark } from '../brand/BrandWordmark';
+
 export function WebGLFallback() {
   return (
     <div className="webgl-fallback">
       <div className="fallback-brand">
-        <img
-          className="fallback-brand-logo"
-          src="/brand/kwanda-logo-light.png"
-          alt="Kwanda Corporations"
-          width={290}
-          height={209}
-        />
+        <BrandWordmark className="fallback-brand-logo" />
       </div>
 
       <div className="fallback-art" aria-hidden="true">

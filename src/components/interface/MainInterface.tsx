@@ -3,6 +3,7 @@ import { useIsTouch } from '../../hooks/useReducedMotion';
 import { LANDMARK_LIST, type LandmarkId } from '../../lib/landmarks';
 import { JOURNEY_STOPS } from '../../lib/journey';
 import { AudioControls } from '../audio/AudioControls';
+import { BrandWordmark } from '../brand/BrandWordmark';
 import type { NavigationApi } from '../world/CameraController';
 
 type JourneyState = {
@@ -55,13 +56,7 @@ export function MainInterface({
   return (
     <div className="world-ui">
       <header className="ui-brand">
-        <img
-          className="ui-brand-logo"
-          src="/brand/kwanda-logo-light.png"
-          alt="Kwanda Corporations"
-          width={290}
-          height={209}
-        />
+        <BrandWordmark className="ui-brand-logo" />
       </header>
 
       <div className="ui-top-right">

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import { BrandWordmark } from '../../components/brand/BrandWordmark';
 import { MEDIA } from '../../lib/media';
 import {
   ProcessArc,
@@ -349,13 +350,7 @@ export function KatishaProject() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of the journey.</p>
-        <img
-          className="about-close-logo"
-          src="/brand/kwanda-logo.png"
-          alt="Kwanda Corporations"
-          width={290}
-          height={209}
-        />
+        <BrandWordmark className="about-close-logo" tone="ink" />
       </section>
     </div>
   );

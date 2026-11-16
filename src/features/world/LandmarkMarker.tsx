@@ -43,6 +43,11 @@ export function LandmarkMarker({
     () => landmarkRegistry.hovered === id,
     () => false,
   );
+  const discovered = useSyncExternalStore(
+    landmarkRegistry.subscribe,
+    () => landmarkRegistry.isDiscovered(),
+    () => false,
+  );
 
   useFrame((state, delta) => {
     const dt = Math.min(0.05, delta);
@@ -59,6 +64,10 @@ export function LandmarkMarker({
       if (!reduced) diamondRef.current.rotation.y += dt * 0.35;
     }
   });
+
+  // At the very start of the experience the houses speak for themselves; the
+  // markers only appear once the traveller has begun exploring by hand.
+  if (!discovered) return null;
 
   return (
     <group>

@@ -5,6 +5,8 @@ import { pathPoint, terrainHeight } from '../../lib/terrain';
 
 const POST_HEIGHT = 5;
 const BOARD_Y = POST_HEIGHT + 0.3;
+/** How far the signpost stands from the centre line of the road. */
+const SHOULDER = 11;
 
 type RoadSignProps = {
   t: number;
@@ -128,7 +130,20 @@ export function RoadSign({
   onSelect,
   onStart,
 }: RoadSignProps) {
-  const { x, z } = useMemo(() => pathPoint(t), [t]);
+  const { x, z } = useMemo(() => {
+    const point = pathPoint(t);
+    // Step off the centre line along the road's shoulder so the board never
+    // blocks the way: the sign stands beside the road the camera drives down.
+    const e = 0.001;
+    const a = pathPoint(Math.max(0, t - e));
+    const b = pathPoint(Math.min(1, t + e));
+    const dx = b.x - a.x;
+    const dz = b.z - a.z;
+    const len = Math.hypot(dx, dz) || 1;
+    const nx = -dz / len;
+    const nz = dx / len;
+    return { x: point.x + nx * SHOULDER, z: point.z + nz * SHOULDER };
+  }, [t]);
   const ground = useMemo(() => terrainHeight(x, z), [x, z]);
   const wood = useMemo(() => woodTexture(), []);
 

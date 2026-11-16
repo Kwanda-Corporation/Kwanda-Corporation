@@ -1,11 +1,12 @@
 # robots.txt — Kwanda Corporations
-# https://kwandacorporation.com
+# https://kwandacorporation.org
 
 User-agent: *
 Allow: /
 
-# Search engines should render the experience; styles and scripts are required.
+# Search engines should render the experience; styles, scripts and media are required.
 Allow: /assets/
 Allow: /media/
+Allow: /seo.css
 
-Sitemap: https://kwandacorporation.com/sitemap.xml
+Sitemap: https://kwandacorporation.org/sitemap.xml

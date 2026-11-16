@@ -253,6 +253,9 @@ export function CameraController({ terrainRef, apiRef, reduced }: CameraControll
     };
 
     const setDestination = (x: number, z: number) => {
+      // Clicking the land to travel is the manual exploration cue: from here on
+      // the destination markers are allowed to appear.
+      landmarkRegistry.reveal();
       noteRenderActivity(1800);
       const constrained = clampToPlayArea(x, z);
       const ground = terrainHeight(constrained.x, constrained.z) + 1.4;

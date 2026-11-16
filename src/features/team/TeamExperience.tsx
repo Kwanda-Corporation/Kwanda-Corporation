@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useReveal } from '../../hooks/useReveal';
+import { BrandWordmark } from '../../components/brand/BrandWordmark';
 import { OrbitDiagram, RidgeArt } from '../experience/ExperienceArt';
 import { TEAM } from './team';
 
@@ -67,6 +68,14 @@ export function TeamExperience() {
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div className="member-body">
+                <figure className="member-photo">
+                  <img
+                    src={member.photo}
+                    alt={`Portrait of ${member.name}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
                 <h3 className="member-name">{member.name}</h3>
                 <p className="member-role">{member.role}</p>
                 {member.focus ? <p className="member-focus">{member.focus}</p> : null}
@@ -108,13 +117,7 @@ export function TeamExperience() {
       <section className="about-close" data-reveal>
         <p className="about-close-line" aria-hidden="true" />
         <p className="about-close-title">The art of collaboration.</p>
-        <img
-          className="about-close-logo"
-          src="/brand/kwanda-logo.png"
-          alt="Kwanda Corporations"
-          width={290}
-          height={209}
-        />
+        <BrandWordmark className="about-close-logo" tone="ink" />
       </section>
     </div>
   );

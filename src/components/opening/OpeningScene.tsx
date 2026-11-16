@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useAudio } from '../../hooks/useAudio';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { BrandWordmark } from '../brand/BrandWordmark';
 import { DrummerIllustration } from './DrummerIllustration';
 
 type OpeningSceneProps = {
@@ -163,13 +164,7 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
       <div className="opening-scrim" aria-hidden="true" />
 
       <div className="opening-brand" ref={brandRef}>
-        <img
-          className="opening-brand-logo"
-          src="/brand/kwanda-logo-light.png"
-          alt="Kwanda Corporations"
-          width={290}
-          height={209}
-        />
+        <BrandWordmark className="opening-brand-logo" />
       </div>
 
       <div className="opening-controls" ref={controlsRef}>

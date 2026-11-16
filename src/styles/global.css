@@ -70,6 +70,68 @@ p {
   background: var(--black);
 }
 
+/* ------------------------------------------------------------------- brand */
+
+.brand-wordmark {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.brand-wordmark-icon {
+  display: block;
+  flex: none;
+  width: 5em;
+  height: auto;
+}
+
+.brand-wordmark-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.brand-wordmark-name {
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.brand-wordmark-divider {
+  display: block;
+  flex: none;
+  width: 1px;
+  height: 0.9em;
+  background: var(--white-30);
+}
+
+.brand-wordmark-suffix {
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--white-70);
+}
+
+.brand-wordmark--ink .brand-wordmark-name {
+  color: var(--ink);
+}
+
+.brand-wordmark--ink .brand-wordmark-divider {
+  background: var(--ink-38);
+}
+
+.brand-wordmark--ink .brand-wordmark-suffix {
+  color: var(--ink-62);
+}
+
 /* ------------------------------------------------------------------ opening */
 
 .opening {
@@ -170,12 +232,6 @@ p {
   top: clamp(16px, 3.2vh, 34px);
   left: clamp(18px, 3.8vw, 46px);
   z-index: 2;
-}
-
-.opening-brand-logo {
-  display: block;
-  height: clamp(64px, 9vh, 88px);
-  width: auto;
 }
 
 .opening-controls {
@@ -431,12 +487,6 @@ p {
   left: clamp(18px, 3.4vw, 42px);
   display: flex;
   align-items: flex-start;
-}
-
-.ui-brand-logo {
-  display: block;
-  height: clamp(60px, 8vh, 76px);
-  width: auto;
 }
 
 .ui-top-right {
@@ -733,6 +783,121 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
 }
 
+/* ------------------------------------------------- enter a destination house */
+
+.world.is-entering .world-ui {
+  animation: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* The threshold is a clean frame: destination labels and roadside signs step
+   aside while the camera walks up to the door. */
+.world.is-entering .landmark-label-wrap,
+.world.is-entering .road-sign-wrap {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.threshold {
+  position: fixed;
+  inset: 0;
+  z-index: 290;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 58%,
+    rgba(8, 8, 8, 0) 0%,
+    rgba(8, 8, 8, 0.46) 44%,
+    rgba(8, 8, 8, 0.95) 84%
+  );
+  animation: threshold-in 0.85s var(--ease) both;
+}
+
+/* A warm doorway glow low in the frame, as if stepping into the house. */
+.threshold-door {
+  position: absolute;
+  left: 50%;
+  bottom: -6vh;
+  width: min(52vw, 460px);
+  height: min(48vh, 430px);
+  transform: translateX(-50%);
+  border-radius: 50% 50% 0 0 / 32% 32% 0 0;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(232, 117, 50, 0.26) 0%,
+    rgba(232, 117, 50, 0.08) 52%,
+    rgba(232, 117, 50, 0) 78%
+  );
+  filter: blur(26px);
+  animation: threshold-door 0.95s var(--ease) both;
+}
+
+.threshold-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 0 24px;
+  text-align: center;
+  animation: threshold-copy 0.8s var(--ease) 0.14s both;
+}
+
+.threshold-kicker {
+  font-size: 8px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 240, 0.55);
+}
+
+.threshold-name {
+  font-size: clamp(21px, 2.8vw, 32px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #f5f5f0;
+}
+
+.threshold-cue {
+  margin-top: 2px;
+  font-size: 8px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+@keyframes threshold-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes threshold-door {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
+@keyframes threshold-copy {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* --------------------------------------------------------------- transition */
 
 .curtain {
@@ -768,12 +933,6 @@ input[type="range"]::-moz-range-thumb {
   justify-content: center;
   gap: 18px;
   background: var(--black);
-}
-
-.loading-logo {
-  display: block;
-  height: clamp(96px, 13vh, 128px);
-  width: auto;
 }
 
 .loading-track {
@@ -831,12 +990,6 @@ input[type="range"]::-moz-range-thumb {
   gap: 10px;
   font-size: 11px;
   letter-spacing: 0.36em;
-}
-
-.fallback-brand-logo {
-  display: block;
-  height: clamp(56px, 8vw, 72px);
-  width: auto;
 }
 
 .fallback-art {
@@ -940,6 +1093,14 @@ input[type="range"]::-moz-range-thumb {
   .ui-footer,
   .hint-sub {
     display: none;
+  }
+
+  .brand-wordmark {
+    font-size: 13px;
+  }
+
+  .brand-wordmark-icon {
+    width: 5em;
   }
 
   .ui-button {
