@@ -131,8 +131,8 @@
               "https://github.com/Kwanda-Corporation"
             ],
             "owns": [
-              { "@id": "https://kwandacorporation.org/#katisha-brand" },
-              { "@id": "https://kwandacorporation.org/#gerayo-brand" }
+              { "@id": "https://kwandacorporation.org/#katisha" },
+              { "@id": "https://kwandacorporation.org/#gerayo" }
             ],
             "founder": { "@id": "https://kwandacorporation.org/#manzi-alpe" },
             "employee": [
@@ -199,43 +199,51 @@
             "parentOrganization": { "@id": "https://kwandacorporation.org/#organization" }
           },
           {
-            "@type": ["SoftwareApplication", "Product"],
+            "@type": "Service",
             "@id": "https://kwandacorporation.org/#katisha",
             "name": "Katisha",
             "alternateName": ["Katisha Travel Booking", "Katisha Bus Booking", "Katisha Today"],
-            "applicationCategory": "TravelApplication",
-            "applicationSubCategory": "Bus ticket booking",
-            "operatingSystem": "Android, iOS, Web",
+            "serviceType": "Bus ticket booking platform",
+            "category": "Travel booking",
             "url": "https://katisha.today",
             "sameAs": ["https://katisha.today"],
-            "description": "Katisha is a digital travel booking platform originating in Rwanda, designed to make travelling across East Africa easier, more accessible and more convenient. It connects passengers with transportation operators for digital discovery, online booking, operator integration and digital payments.",
+            "description": "Katisha is a digital travel booking platform originating in Rwanda, designed to make travelling across East Africa easier, more accessible and more convenient. It connects passengers with transportation operators for digital discovery, online booking, operator integration and digital payments. It supports searching bus journeys by route, comparing departure times, operators and prices, booking a seat online, receiving a digital booking confirmation and boarding with a QR ticket, and paying by mobile money including MTN MoMo and Airtel Money.",
             "brand": { "@id": "https://kwandacorporation.org/#katisha-brand" },
-            "publisher": { "@id": "https://kwandacorporation.org/#organization" },
-            "manufacturer": { "@id": "https://kwandacorporation.org/#organization" },
-            "inLanguage": "en",
-            "countriesSupported": ["RW", "UG", "KE", "TZ", "BI", "CD", "SS"],
-            "featureList": [
-              "Search available bus journeys by route",
-              "Compare departure times, routes and operators",
-              "Book a seat online",
-              "Digital booking confirmation",
-              "QR ticket for boarding",
-              "Mobile money payments including MTN MoMo and Airtel Money",
-              "Access from a phone without visiting a bus station"
-            ]
+            "provider": { "@id": "https://kwandacorporation.org/#organization" },
+            "areaServed": [
+              { "@type": "Country", "name": "Rwanda" },
+              { "@type": "Country", "name": "Uganda" },
+              { "@type": "Country", "name": "Kenya" },
+              { "@type": "Country", "name": "Tanzania" },
+              { "@type": "Country", "name": "Burundi" },
+              { "@type": "Country", "name": "Democratic Republic of the Congo" },
+              { "@type": "Country", "name": "South Sudan" }
+            ],
+            "availableChannel": {
+              "@type": "ServiceChannel",
+              "serviceUrl": "https://katisha.today",
+              "availableLanguage": "en"
+            },
+            "audience": {
+              "@type": "Audience",
+              "audienceType": "Passengers, travellers and bus operators in Rwanda and East Africa"
+            }
           },
           {
-            "@type": ["SoftwareApplication", "Product"],
+            "@type": "Service",
             "@id": "https://kwandacorporation.org/#gerayo",
             "name": "Gerayo",
             "alternateName": "Gerayo Student Transport",
-            "applicationCategory": "EducationalApplication",
-            "operatingSystem": "Web",
+            "serviceType": "Student transport and routing system",
+            "category": "Education and transportation software",
             "description": "Gerayo — a student transport and routing system — is a proposed system designed to connect the schools, parents, transport operators and education authorities responsible for getting students to school.",
             "brand": { "@id": "https://kwandacorporation.org/#gerayo-brand" },
-            "publisher": { "@id": "https://kwandacorporation.org/#organization" },
-            "manufacturer": { "@id": "https://kwandacorporation.org/#organization" },
-            "inLanguage": "en"
+            "provider": { "@id": "https://kwandacorporation.org/#organization" },
+            "areaServed": { "@type": "Country", "name": "Rwanda" },
+            "audience": {
+              "@type": "Audience",
+              "audienceType": "Schools, parents, student transport operators and education authorities"
+            }
           },
           {
             "@type": "ItemList",
