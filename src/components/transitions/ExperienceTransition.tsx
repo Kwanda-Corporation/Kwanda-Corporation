@@ -150,7 +150,7 @@ export function ExperienceTransition({
                 {info.navLabel}
               </button>
             ))}
-            <a href="/contact/">Contact us</a>
+            <a href="/contact/" target="_blank" rel="noopener noreferrer">Contact us</a>
           </nav>
 
           <button

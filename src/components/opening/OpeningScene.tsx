@@ -148,8 +148,10 @@ export function OpeningScene({ onEnterWorld }: OpeningSceneProps) {
   const handleSkip = useCallback(() => {
     if (enteredRef.current) return;
     void enableAmbience();
-    goToWorld();
-  }, [enableAmbience, goToWorld]);
+    document
+      .getElementById('landing-content')
+      ?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  }, [enableAmbience, reduced]);
 
   return (
     <div className="opening" ref={rootRef}>

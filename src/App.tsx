@@ -1,20 +1,24 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { AudioProvider } from './hooks/useAudio';
-import { OpeningScene } from './components/opening/OpeningScene';
+import { LandingPage } from './components/landing/LandingPage';
 import { LoadingScreen } from './components/interface/LoadingScreen';
 
 const WorldCanvas = lazy(() => import('./components/world/WorldCanvas'));
 
 function Experience() {
-  const [stage, setStage] = useState<'opening' | 'world'>('opening');
+  const [stage, setStage] = useState<'landing' | 'world'>('landing');
   const curtainRef = useRef<HTMLDivElement>(null);
 
-  /* The fixed landing nav lives outside React for crawlers. Hide it once the
-     visitor is in the world, where the world has its own destinations nav. */
+  /* The fixed landing nav lives outside React for crawlers. It belongs to the
+     landing page, so hide it once the visitor steps into the world. */
   useEffect(() => {
     document.body.classList.toggle('is-world-stage', stage === 'world');
-    return () => document.body.classList.remove('is-world-stage');
+    document.body.classList.toggle('is-landing-stage', stage === 'landing');
+    return () => {
+      document.body.classList.remove('is-world-stage');
+      document.body.classList.remove('is-landing-stage');
+    };
   }, [stage]);
 
   const handleEnterWorld = useCallback(() => {
@@ -40,9 +44,13 @@ function Experience() {
     gsap.to(line, { opacity: 0, duration: 0.9, delay: 1.25, ease: 'power2.in' });
   }, []);
 
+  useEffect(() => {
+    if (stage === 'world') window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [stage]);
+
   return (
-    <div className="app">
-      {stage === 'opening' && <OpeningScene onEnterWorld={handleEnterWorld} />}
+    <div className={`app ${stage === 'landing' ? 'app--landing' : 'app--world'}`}>
+      {stage === 'landing' && <LandingPage onEnterWorld={handleEnterWorld} />}
 
       {stage === 'world' && (
         <Suspense fallback={<LoadingScreen />}>

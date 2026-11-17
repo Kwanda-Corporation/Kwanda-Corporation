@@ -37,6 +37,8 @@
     <link rel="canonical" href="https://kwandacorporation.org/" />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="Kwanda Corporations for AI assistants" />
     <link rel="me" href="https://github.com/Kwanda-Corporation" />
+    <link rel="me" href="https://www.linkedin.com/company/kwanda-corporations" />
+    <link rel="me" href="https://x.com/kwandacorporation" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3" />
@@ -108,7 +110,9 @@
             },
             "address": {
               "@type": "PostalAddress",
+              "streetAddress": "KG 622 St, Kimihurura",
               "addressLocality": "Kigali",
+              "addressRegion": "Kigali City",
               "addressCountry": "RW"
             },
             "areaServed": [
@@ -128,7 +132,9 @@
               "Digital transformation in Africa"
             ],
             "sameAs": [
-              "https://github.com/Kwanda-Corporation"
+              "https://github.com/Kwanda-Corporation",
+              "https://www.linkedin.com/company/kwanda-corporations",
+              "https://x.com/kwandacorporation"
             ],
             "owns": [
               { "@id": "https://kwandacorporation.org/#katisha" },
@@ -492,6 +498,18 @@
         color: #e87532;
       }
 
+      /* Once the hero scrolls away, the nav gets a quiet glass backdrop so it
+         stays legible over the company sections below. */
+      body.is-scrolled .home-nav {
+        padding: 9px 16px;
+        border: 1px solid rgba(245, 245, 240, 0.12);
+        border-radius: 999px;
+        background: rgba(8, 8, 8, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45);
+      }
+
       /* The fixed landing nav belongs to the opening scene. The world has its
          own destinations nav, and the text version has its own page links. */
       body.is-world-stage .home-nav,
@@ -761,12 +779,12 @@
   <body>
     <a class="skip-link" href="#site-text">Skip to the text version</a>
     <nav class="home-nav" aria-label="Primary">
-      <a href="/about/">About</a>
-      <a href="/katisha/">Katisha</a>
-      <a href="/gerayo/">Gerayo</a>
-      <a href="/team/">Team</a>
-      <a href="/faq/">FAQ</a>
-      <a href="/contact/">Contact us</a>
+      <a href="/about/" target="_blank" rel="noopener noreferrer">About</a>
+      <a href="/katisha/" target="_blank" rel="noopener noreferrer">Katisha</a>
+      <a href="/gerayo/" target="_blank" rel="noopener noreferrer">Gerayo</a>
+      <a href="/team/" target="_blank" rel="noopener noreferrer">Team</a>
+      <a href="/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
+      <a href="/contact/" target="_blank" rel="noopener noreferrer">Contact us</a>
     </nav>
     <div id="root"></div>
     <main id="site-text" class="seo-static" aria-labelledby="seo-title">
@@ -801,12 +819,12 @@
         </p>
 
         <p class="seo-meta-links">
-          <a href="/about/">About</a>
-          <a href="/katisha/">Katisha</a>
-          <a href="/gerayo/">Gerayo</a>
-          <a href="/team/">Team</a>
-          <a href="/faq/">FAQ</a>
-          <a href="/contact/">Contact us</a>
+          <a href="/about/" rel="noopener noreferrer" target="_blank">About</a>
+          <a href="/katisha/" rel="noopener noreferrer" target="_blank">Katisha</a>
+          <a href="/gerayo/" rel="noopener noreferrer" target="_blank">Gerayo</a>
+          <a href="/team/" rel="noopener noreferrer" target="_blank">Team</a>
+          <a href="/faq/" rel="noopener noreferrer" target="_blank">FAQ</a>
+          <a href="/contact/" rel="noopener noreferrer" target="_blank">Contact us</a>
         </p>
 
         <hr class="seo-rule" />
@@ -846,9 +864,9 @@
               </p>
               <p>
                 Katisha is a live product. Bookings happen at
-                <a href="https://katisha.today" rel="noopener">katisha.today</a>.
+                <a href="https://katisha.today" rel="noopener noreferrer" target="_blank">katisha.today</a>.
                 Learn more on the
-                <a href="/katisha/">Katisha page</a>.
+                <a href="/katisha/" rel="noopener noreferrer" target="_blank">Katisha page</a>.
               </p>
             </article>
             <article class="seo-card">
@@ -863,7 +881,7 @@
               </p>
               <p>
                 Read more on the
-                <a href="/gerayo/">Gerayo page</a>.
+                <a href="/gerayo/" rel="noopener noreferrer" target="_blank">Gerayo page</a>.
               </p>
             </article>
           </div>
@@ -895,8 +913,8 @@
             />
           </p>
           <p>
-            <a href="/katisha/">Read the Katisha page</a> or book directly at
-            <a href="https://katisha.today" rel="noopener">katisha.today</a>.
+            <a href="/katisha/" rel="noopener noreferrer" target="_blank">Read the Katisha page</a> or book directly at
+            <a href="https://katisha.today" rel="noopener noreferrer" target="_blank">katisha.today</a>.
             Katisha support: <a href="mailto:support@katisha.today">support@katisha.today</a>
             · <a href="tel:+250793216191">+250 793 216 191</a>.
           </p>
@@ -908,8 +926,8 @@
             Several organisations use “Kwanda” in their names, so search results can
             mix them together. This website refers only to
             <strong>Kwanda Corporations Ltd</strong>, registered in Kigali, Rwanda —
-            the company behind <a href="/katisha/">Katisha</a> and
-            <a href="/gerayo/">Gerayo</a>.
+            the company behind <a href="/katisha/" rel="noopener noreferrer" target="_blank">Katisha</a> and
+            <a href="/gerayo/" rel="noopener noreferrer" target="_blank">Gerayo</a>.
           </p>
           <p>
             <strong>Kwanda Corporations is not Kwanda Group.</strong> Kwanda Group is
@@ -920,8 +938,8 @@
           </p>
           <p>
             For the full explanation, see the
-            <a href="/about/">About page</a> or the
-            <a href="/faq/">FAQ</a>.
+            <a href="/about/" rel="noopener noreferrer" target="_blank">About page</a> or the
+            <a href="/faq/" rel="noopener noreferrer" target="_blank">FAQ</a>.
           </p>
         </section>
 
@@ -1038,7 +1056,7 @@
             brings digital discovery, online booking, operator integration and digital
             payments into one platform so passengers can plan and book bus journeys
             across East Africa without visiting a station. Katisha is live at
-            <a href="https://katisha.today" rel="noopener">katisha.today</a>.
+            <a href="https://katisha.today" rel="noopener noreferrer" target="_blank">katisha.today</a>.
           </p>
 
           <h3>What is Gerayo?</h3>
@@ -1059,10 +1077,20 @@
         <section aria-labelledby="seo-contact">
           <h2 id="seo-contact">Contact</h2>
           <p>
-            Kwanda Corporations is based in Kigali, Rwanda. Follow the company's work
-            on <a href="https://github.com/Kwanda-Corporation" rel="noopener">GitHub</a>,
-            or visit <a href="https://katisha.today" rel="noopener">Katisha</a> to see
-            the live product.
+            Kwanda Corporations is based in Kigali, Rwanda. The office is at
+            <strong>Fairview Building, KG 622 St, Kimihurura, Kigali</strong> (temporary
+            address, visits by appointment), with post handled through
+            <strong>Norrsken Kigali House, 1 KN 78 St, Kigali</strong>. Write to
+            <a href="mailto:manzialpe@gmail.com">manzialpe@gmail.com</a> or call
+            <a href="tel:+250793216191">+250 793 216 191</a>.
+          </p>
+          <p>
+            Follow the company's work on
+            <a href="https://www.linkedin.com/company/kwanda-corporations" rel="noopener noreferrer" target="_blank">LinkedIn</a>,
+            <a href="https://x.com/kwandacorporation" rel="noopener noreferrer" target="_blank">X</a> and
+            <a href="https://github.com/Kwanda-Corporation" rel="noopener noreferrer" target="_blank">GitHub</a>,
+            or visit <a href="https://katisha.today" rel="noopener noreferrer" target="_blank">Katisha</a>
+            to see the live product.
           </p>
         </section>
 

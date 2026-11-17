@@ -19,6 +19,8 @@
     <link rel="canonical" href="https://kwandacorporation.org/contact/" />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="Kwanda Corporations for AI assistants" />
     <link rel="me" href="https://github.com/Kwanda-Corporation" />
+    <link rel="me" href="https://www.linkedin.com/company/kwanda-corporations" />
+    <link rel="me" href="https://x.com/kwandacorporation" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="stylesheet" href="/seo.css" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3" />
@@ -80,10 +82,16 @@
             "disambiguatingDescription": "Kwanda Corporations Ltd is a software and technology company registered in Kigali, Rwanda.",
             "address": {
               "@type": "PostalAddress",
+              "streetAddress": "KG 622 St, Kimihurura",
+              "addressRegion": "Kigali City",
               "addressLocality": "Kigali",
               "addressCountry": "RW"
             },
-            "sameAs": ["https://github.com/Kwanda-Corporation"],
+            "sameAs": [
+              "https://github.com/Kwanda-Corporation",
+              "https://www.linkedin.com/company/kwanda-corporations",
+              "https://x.com/kwandacorporation"
+            ],
             "contactPoint": [
               {
                 "@type": "ContactPoint",
@@ -114,7 +122,7 @@
 
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href="/" aria-label="Kwanda Corporations — home">
+        <a class="brand" href="/" target="_blank" rel="noopener" aria-label="Kwanda Corporations — home">
           <img src="/brand/logo-icon.png" alt="" width="247" height="55" />
           <span class="brand-text">
             <span>Kwanda</span>
@@ -123,12 +131,12 @@
           </span>
         </a>
         <nav class="site-nav" aria-label="Primary">
-          <a href="/about/">About</a>
-          <a href="/katisha/">Katisha</a>
-          <a href="/gerayo/">Gerayo</a>
-          <a href="/team/">Team</a>
-          <a href="/faq/">FAQ</a>
-          <a href="/contact/" aria-current="page">Contact us</a>
+          <a href="/about/" target="_blank" rel="noopener">About</a>
+          <a href="/katisha/" target="_blank" rel="noopener">Katisha</a>
+          <a href="/gerayo/" target="_blank" rel="noopener">Gerayo</a>
+          <a href="/team/" target="_blank" rel="noopener">Team</a>
+          <a href="/faq/" target="_blank" rel="noopener">FAQ</a>
+          <a href="/contact/" target="_blank" rel="noopener" aria-current="page">Contact us</a>
         </nav>
       </div>
     </header>
@@ -136,7 +144,7 @@
     <main id="main">
       <div class="wrap">
         <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="/">Home</a><span aria-hidden="true">/</span>Contact
+          <a href="/" target="_blank" rel="noopener">Home</a><span aria-hidden="true">/</span>Contact
         </nav>
 
         <p class="eyebrow">Contact · Kigali, Rwanda</p>
@@ -162,6 +170,7 @@
             name="contact"
             action="/.netlify/functions/contact"
             method="POST"
+            novalidate
           >
             <div class="form-grid">
               <div class="field">
@@ -172,8 +181,10 @@
                   type="text"
                   autocomplete="name"
                   maxlength="120"
+                  aria-describedby="contact-name-error"
                   required
                 />
+                <p class="field-error" id="contact-name-error" hidden></p>
               </div>
               <div class="field">
                 <label for="contact-email">Email address <span aria-hidden="true">*</span></label>
@@ -183,8 +194,10 @@
                   type="email"
                   autocomplete="email"
                   maxlength="200"
+                  aria-describedby="contact-email-error"
                   required
                 />
+                <p class="field-error" id="contact-email-error" hidden></p>
               </div>
               <div class="field">
                 <label for="contact-phone">Phone <span class="optional">(optional)</span></label>
@@ -215,8 +228,13 @@
                   rows="7"
                   minlength="10"
                   maxlength="5000"
+                  aria-describedby="contact-message-error contact-message-hint"
                   required
                 ></textarea>
+                <p class="field-hint" id="contact-message-hint">
+                  <span id="contact-message-count">0</span> / 5000 characters
+                </p>
+                <p class="field-error" id="contact-message-error" hidden></p>
               </div>
             </div>
 
@@ -232,7 +250,10 @@
             </p>
 
             <div class="form-actions">
-              <button class="button" id="contact-submit" type="submit">Send message</button>
+              <button class="button" id="contact-submit" type="submit">
+                <span class="button-spinner" aria-hidden="true"></span>
+                <span class="button-label">Send message</span>
+              </button>
               <p class="form-note">
                 Prefer email? Write to
                 <a href="mailto:manzialpe@gmail.com">manzialpe@gmail.com</a>. We usually reply
@@ -243,12 +264,48 @@
             <p
               class="form-status"
               id="contact-status"
-              role="status"
-              aria-live="polite"
+              role="alert"
+              aria-live="assertive"
               hidden
             ></p>
           </form>
         </section>
+
+        <div class="toast-layer" id="contact-toast" hidden>
+          <div class="toast-backdrop" data-close-toast></div>
+          <div
+            class="toast"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-toast-title"
+            aria-describedby="contact-toast-copy"
+          >
+            <button
+              class="toast-close"
+              type="button"
+              data-close-toast
+              aria-label="Close message"
+            >
+              ×
+            </button>
+            <span class="toast-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                <path d="m5 12.5 4.4 4.4L19 7.1" stroke="currentColor" stroke-width="1.6" />
+              </svg>
+            </span>
+            <p class="toast-kicker">Message sent</p>
+            <h2 class="toast-title" id="contact-toast-title">Thank you.</h2>
+            <p class="toast-copy" id="contact-toast-copy">
+              Your message is on its way. We will reply by email within two business days.
+            </p>
+            <div class="toast-actions">
+              <button class="button" type="button" data-close-toast>Close</button>
+              <a class="toast-link" href="https://katisha.today" target="_blank" rel="noopener noreferrer">
+                Visit Katisha ↗
+              </a>
+            </div>
+          </div>
+        </div>
 
         <section aria-labelledby="contact-details">
           <h2 id="contact-details">Get in touch</h2>
@@ -271,13 +328,48 @@
             </li>
             <li>
               <span class="label">Book a bus</span>
-              <span><a href="https://katisha.today" rel="noopener">katisha.today</a></span>
+              <span><a href="https://katisha.today" target="_blank" rel="noopener noreferrer">katisha.today</a></span>
+            </li>
+            <li>
+              <span class="label">LinkedIn</span>
+              <span><a href="https://www.linkedin.com/company/kwanda-corporations" target="_blank" rel="noopener noreferrer">Kwanda Corporations</a></span>
+            </li>
+            <li>
+              <span class="label">X (Twitter)</span>
+              <span><a href="https://x.com/kwandacorporation" target="_blank" rel="noopener noreferrer">@kwandacorporation</a></span>
             </li>
             <li>
               <span class="label">Code &amp; projects</span>
-              <span><a href="https://github.com/Kwanda-Corporation" rel="noopener">github.com/Kwanda-Corporation</a></span>
+              <span><a href="https://github.com/Kwanda-Corporation" target="_blank" rel="noopener noreferrer">github.com/Kwanda-Corporation</a></span>
             </li>
           </ul>
+
+          <div class="address-grid">
+            <article class="address-card">
+              <span class="meta">Kigali office · Temporary</span>
+              <h3>Fairview Building</h3>
+              <address>
+                KG 622 St, Kimihurura<br />
+                Kigali, Rwanda
+              </address>
+              <p class="address-note">
+                Our permanent office address is being finalised. Visits are by appointment —
+                please email or call before stopping by.
+              </p>
+            </article>
+            <article class="address-card">
+              <span class="meta">Mailing address</span>
+              <h3>Norrsken Kigali House</h3>
+              <address>
+                1 KN 78 St<br />
+                Kigali, Rwanda
+              </address>
+              <p class="address-note">
+                Use this address for documents and post. For product support, contact the
+                Katisha team directly.
+              </p>
+            </article>
+          </div>
 
           <div class="callout">
             <p>
@@ -297,7 +389,7 @@
               <h3>Bookings &amp; support</h3>
               <p>
                 Help with a booking, a route or a digital ticket.
-                <a href="https://katisha.today" rel="noopener">Book on katisha.today →</a>
+                <a href="https://katisha.today" rel="noopener noreferrer" target="_blank">Book on katisha.today →</a>
               </p>
             </article>
             <article class="card">
@@ -305,7 +397,7 @@
               <h3>Schools &amp; pilots</h3>
               <p>
                 Interested in student transport coordination? Read about
-                <a href="/gerayo/">Gerayo</a> and start a conversation.
+                <a href="/gerayo/" target="_blank" rel="noopener">Gerayo</a> and start a conversation.
               </p>
             </article>
             <article class="card">
@@ -320,8 +412,8 @@
               <span class="meta">Media</span>
               <h3>Press &amp; company information</h3>
               <p>
-                For background, see <a href="/about/">about the company</a> and the
-                <a href="/team/">team</a>.
+                For background, see <a href="/about/" target="_blank" rel="noopener">about the company</a> and the
+                <a href="/team/" target="_blank" rel="noopener">team</a>.
               </p>
             </article>
           </div>
@@ -329,8 +421,8 @@
           <h2>Before you write</h2>
           <p>
             Kwanda Corporations Ltd is a software and technology company registered in
-            Kigali, Rwanda. It is the company behind <a href="/katisha/">Katisha</a> and
-            <a href="/gerayo/">Gerayo</a>. It is not affiliated with Kwanda Group, Kwanda Ltd
+            Kigali, Rwanda. It is the company behind <a href="/katisha/" target="_blank" rel="noopener">Katisha</a> and
+            <a href="/gerayo/" target="_blank" rel="noopener">Gerayo</a>. It is not affiliated with Kwanda Group, Kwanda Ltd
             (UK), Kwanda Technology PTY, Vision Kwanda Group, Kwanda Industrial or any other
             similarly named organisation.
           </p>
@@ -341,15 +433,18 @@
     <footer class="site-footer">
       <div class="wrap">
         <p>© 2026 Kwanda Corporations Ltd · Kigali, Rwanda</p>
+        <p class="footer-address">Fairview Building, KG 622 St, Kimihurura · Visits by appointment</p>
         <nav aria-label="Footer">
-          <a href="/">Home</a>
-          <a href="/about/">About</a>
-          <a href="/katisha/">Katisha</a>
-          <a href="/gerayo/">Gerayo</a>
-          <a href="/team/">Team</a>
-          <a href="/faq/">FAQ</a>
-          <a href="/contact/">Contact</a>
-          <a href="https://github.com/Kwanda-Corporation" rel="noopener">GitHub</a>
+          <a href="/" target="_blank" rel="noopener">Home</a>
+          <a href="/about/" target="_blank" rel="noopener">About</a>
+          <a href="/katisha/" target="_blank" rel="noopener">Katisha</a>
+          <a href="/gerayo/" target="_blank" rel="noopener">Gerayo</a>
+          <a href="/team/" target="_blank" rel="noopener">Team</a>
+          <a href="/faq/" target="_blank" rel="noopener">FAQ</a>
+          <a href="/contact/" target="_blank" rel="noopener">Contact</a>
+          <a href="https://www.linkedin.com/company/kwanda-corporations" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://x.com/kwandacorporation" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://github.com/Kwanda-Corporation" target="_blank" rel="noopener noreferrer">GitHub</a>
         </nav>
       </div>
     </footer>
@@ -361,7 +456,36 @@
 
         const status = document.getElementById('contact-status');
         const submit = document.getElementById('contact-submit');
-        const submitLabel = submit.textContent;
+        const submitLabel = submit.querySelector('.button-label');
+        const messageCount = document.getElementById('contact-message-count');
+        const toast = document.getElementById('contact-toast');
+
+        const fields = {
+          name: form.elements.name,
+          email: form.elements.email,
+          message: form.elements.message,
+        };
+
+        const errors = {
+          name: document.getElementById('contact-name-error'),
+          email: document.getElementById('contact-email-error'),
+          message: document.getElementById('contact-message-error'),
+        };
+
+        const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        let lastFocused = null;
+
+        /* Let links from the landing page pre-select a topic (?topic=Gerayo). */
+        const requestedTopic = new URLSearchParams(window.location.search).get('topic');
+        if (requestedTopic) {
+          const select = form.elements.topic;
+          for (const option of select.options) {
+            if (option.value.toLowerCase() === requestedTopic.toLowerCase()) {
+              select.value = option.value;
+              break;
+            }
+          }
+        }
 
         const setStatus = (state, message) => {
           status.hidden = false;
@@ -369,18 +493,124 @@
           status.textContent = message;
         };
 
+        const clearStatus = () => {
+          status.hidden = true;
+          status.textContent = '';
+          delete status.dataset.state;
+        };
+
+        const setError = (key, message) => {
+          const field = fields[key];
+          const slot = errors[key];
+          if (!field || !slot) return;
+          field.setAttribute('aria-invalid', 'true');
+          slot.textContent = message;
+          slot.hidden = false;
+        };
+
+        const clearError = (key) => {
+          const field = fields[key];
+          const slot = errors[key];
+          if (!field || !slot) return;
+          field.removeAttribute('aria-invalid');
+          slot.textContent = '';
+          slot.hidden = true;
+        };
+
+        const validateField = (key) => {
+          const value = fields[key].value.trim();
+          let error = '';
+
+          if (key === 'name') {
+            if (!value) error = 'Please tell us your name.';
+            else if (value.length < 2) error = 'That name looks too short.';
+          }
+
+          if (key === 'email') {
+            if (!value) error = 'Please add an email address we can reply to.';
+            else if (!EMAIL.test(value)) {
+              error = 'Please enter a valid email, like name@company.com.';
+            }
+          }
+
+          if (key === 'message') {
+            if (!value) error = 'Please write a message.';
+            else if (value.length < 10) {
+              error = 'Please add a little more detail (at least 10 characters).';
+            } else if (value.length > 5000) {
+              error = 'Please keep your message under 5000 characters.';
+            }
+          }
+
+          if (error) {
+            setError(key, error);
+            return false;
+          }
+
+          clearError(key);
+          return true;
+        };
+
+        const validateForm = () => {
+          const invalid = ['name', 'email', 'message'].filter((key) => !validateField(key));
+          if (!invalid.length) return true;
+          fields[invalid[0]].focus();
+          return false;
+        };
+
+        Object.keys(fields).forEach((key) => {
+          fields[key].addEventListener('input', () => {
+            if (fields[key].getAttribute('aria-invalid') === 'true') validateField(key);
+          });
+          fields[key].addEventListener('blur', () => {
+            if (fields[key].value.trim()) validateField(key);
+          });
+        });
+
+        const updateCount = () => {
+          if (messageCount) messageCount.textContent = String(fields.message.value.length);
+        };
+
+        fields.message.addEventListener('input', updateCount);
+        updateCount();
+
+        const showToast = () => {
+          lastFocused = document.activeElement;
+          toast.hidden = false;
+          document.body.classList.add('has-toast');
+          const close = toast.querySelector('.toast-close');
+          if (close) close.focus();
+        };
+
+        const hideToast = () => {
+          if (toast.hidden) return;
+          toast.hidden = true;
+          document.body.classList.remove('has-toast');
+          if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+        };
+
+        toast.querySelectorAll('[data-close-toast]').forEach((element) => {
+          element.addEventListener('click', hideToast);
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && !toast.hidden) hideToast();
+        });
+
         form.addEventListener('submit', async (event) => {
           event.preventDefault();
+          clearStatus();
 
-          if (!form.reportValidity()) {
-            setStatus('error', 'Please complete the required fields before sending.');
+          if (!validateForm()) {
+            setStatus('error', 'Please check the highlighted fields before sending.');
             return;
           }
 
           const data = Object.fromEntries(new FormData(form).entries());
           submit.disabled = true;
-          submit.textContent = 'Sending…';
-          status.hidden = true;
+          submit.classList.add('is-loading');
+          submit.setAttribute('aria-busy', 'true');
+          submitLabel.textContent = 'Sending message…';
 
           try {
             const response = await fetch(form.action, {
@@ -401,25 +631,31 @@
 
             if (response.ok && result.ok) {
               form.reset();
+              updateCount();
+              Object.keys(fields).forEach(clearError);
+              showToast();
+            } else if (response.status === 429) {
               setStatus(
-                'success',
-                "Thank you — your message is on its way. We'll reply by email soon.",
+                'error',
+                'You have sent a few messages already. Please wait a moment, or email manzialpe@gmail.com directly.',
               );
             } else {
               setStatus(
                 'error',
                 result.error ||
-                  'Something went wrong. Please email manzialpe@gmail.com directly.',
+                  'Something went wrong while sending your message. Please email manzialpe@gmail.com directly.',
               );
             }
           } catch {
             setStatus(
               'error',
-              'We could not reach the server. Please email manzialpe@gmail.com directly.',
+              'We could not reach the server — check your connection, then try again. You can always email manzialpe@gmail.com directly.',
             );
           } finally {
             submit.disabled = false;
-            submit.textContent = submitLabel;
+            submit.classList.remove('is-loading');
+            submit.removeAttribute('aria-busy');
+            submitLabel.textContent = 'Send message';
           }
         });
       })();

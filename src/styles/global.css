@@ -70,6 +70,32 @@ p {
   background: var(--black);
 }
 
+/* The landing page is a normal, scrollable document. The 3D world keeps the
+   fixed, full-screen frame. */
+body.is-landing-stage {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: auto;
+}
+
+body.is-landing-stage #root {
+  height: auto;
+  min-height: 100%;
+}
+
+.app--landing {
+  position: relative;
+  inset: auto;
+  overflow: visible;
+  min-height: 100%;
+}
+
+.app--world {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
 /* ------------------------------------------------------------------- brand */
 
 .brand-wordmark {
@@ -1081,7 +1107,7 @@ input[type="range"]::-moz-range-thumb {
   }
 
   .opening-skip {
-    top: calc(clamp(18px, 3.6vh, 38px) + 28px);
+    top: calc(clamp(18px, 3.6vh, 38px) + 68px);
     right: clamp(18px, 3.8vw, 46px);
     bottom: auto;
   }

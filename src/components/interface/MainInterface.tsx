@@ -88,7 +88,7 @@ export function MainInterface({
             {info.navLabel}
           </button>
         ))}
-        <a className="ui-destinations-item" href="/contact/">
+        <a className="ui-destinations-item" href="/contact/" target="_blank" rel="noopener noreferrer">
           Contact us
         </a>
       </nav>

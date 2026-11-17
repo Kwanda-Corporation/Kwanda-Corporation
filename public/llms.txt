@@ -4,6 +4,10 @@
 
 Official website: https://kwandacorporation.org/
 Location: Kigali, Rwanda
+Office (temporary, visits by appointment): Fairview Building, KG 622 St, Kimihurura, Kigali, Rwanda
+Mailing address: Norrsken Kigali House, 1 KN 78 St, Kigali, Rwanda
+General email: manzialpe@gmail.com
+Phone: +250 793 216 191
 Tagline: Where software meets art.
 
 ## Company
@@ -55,4 +59,6 @@ Tagline: Where software meets art.
 - Team: https://kwandacorporation.org/team/
 - FAQ: https://kwandacorporation.org/faq/
 - Contact: https://kwandacorporation.org/contact/
+- LinkedIn: https://www.linkedin.com/company/kwanda-corporations
+- X: https://x.com/kwandacorporation
 - GitHub: https://github.com/Kwanda-Corporation
